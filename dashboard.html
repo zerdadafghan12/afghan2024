@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="pr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افغاني ټریډر</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --green: #006341;
+            --red: #CE1126;
+            --black: #000000;
+            --gold: #D3A329;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --blue: #1a5fb4;
+            --purple: #9C27B0;
+            --teal: #009688;
+            --orange: #FF9800;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--green) 0%, var(--black) 50%, var(--red) 100%);
+            color: white;
+            padding: 25px 20px 30px;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid var(--gold);
+        }
+        
+        .app-logo {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .language-btn {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        .language-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .language-menu {
+            display: none;
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            left: 15px;
+            top: 60px;
+            width: 130px;
+        }
+        
+        .language-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .language-option:hover {
+            background: #f0f0f0;
+        }
+        
+        .user-info {
+            padding: 25px 20px 20px;
+            border-bottom: 1px solid #eee;
+            background: var(--light-gray);
+            position: relative;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--green), var(--red));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin: -65px auto 15px auto;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .welcome {
+            font-size: 22px;
+            margin-bottom: 5px;
+            font-weight: 700;
+            color: var(--green);
+            text-align: center;
+        }
+        
+        .email {
+            color: var(--dark-gray);
+            font-size: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .balance-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .balance-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .balance-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+        }
+        
+        .balance-amount {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 5px;
+            color: var(--black);
+            text-align: center;
+        }
+        
+        .usdt-badge {
+            background: linear-gradient(to right, #00a651, #007944);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        #total-deposit .usdt-badge {
+            background: linear-gradient(to right, #009688, #00796B);
+        }
+
+        #total-withdraw .usdt-badge {
+            background: linear-gradient(to right, #F44336, #D32F2F);
+        }
+
+        #total-profit .usdt-badge {
+            background: linear-gradient(to right, #4CAF50, #388E3C);
+        }
+        
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 25px 20px;
+            background: white;
+        }
+        
+        .action-btn {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        }
+        
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+        }
+        
+        .recharge-btn .action-icon { background: linear-gradient(135deg, var(--green), #004d33); }
+        .withdraw-btn .action-icon { background: linear-gradient(135deg, var(--gold), #c69500); }
+        .tax-btn .action-icon { background: linear-gradient(135deg, var(--red), #a00); }
+        .support-btn .action-icon { background: linear-gradient(135deg, var(--teal), #00796B); }
+        .history-btn .action-icon { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .settings-btn .action-icon { background: linear-gradient(135deg, #607D8B, #455A64); }
+        
+        .action-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .referral-section {
+            padding: 20px;
+            background: var(--light-gray);
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .referral-code {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        
+        .referral-text {
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 16px;
+        }
+        
+        .copy-btn {
+            background: var(--gold);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #c69500;
+            transform: scale(1.05);
+        }
+        
+        .records {
+            padding: 20px;
+            background: white;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f5;
+            align-items: center;
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-info {
+            flex: 1;
+        }
+        
+        .record-type {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .record-date {
+            font-size: 13px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .record-amount {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .record-amount.positive {
+            color: var(--green);
+        }
+        
+        .record-amount.negative {
+            color: var(--red);
+        }
+        
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            text-align: center;
+            color: var(--red);
+            background: linear-gradient(to bottom, #fff, #f8f9fa);
+            border: none;
+            border-top: 1px solid #eee;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logout-btn:hover {
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            color: #b30015;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--red);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .afghan-flag {
+            display: inline-block;
+            width: 20px;
+            height: 12px;
+            background: linear-gradient(to right, #000000 33%, #CE1126 33%, #CE1126 66%, #006341 66%);
+            border-radius: 2px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        
+        /* د LTR ژبو لپاره سټایل */
+        [dir="ltr"] {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        [dir="ltr"] .language-btn {
+            left: auto;
+            right: 15px;
+        }
+        
+        [dir="ltr"] .language-menu {
+            left: auto;
+            right: 15px;
+        }
+        
+        .floating-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--green);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            font-weight: 600;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 10px 0;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-size: 18px;
+            color: var(--dark-gray);
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--green);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* د پنډینګ تراکنشونو سټایل */
+        .pending-section {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .pending-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: #fff9e6;
+            border-radius: 10px;
+            border-left: 4px solid var(--orange);
+        }
+        
+        .pending-info {
+            flex: 1;
+        }
+        
+        .pending-type {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: var(--orange);
+        }
+        
+        .pending-date {
+            font-size: 13px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .pending-amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--orange);
+        }
+        
+        .pending-badge {
+            background: var(--orange);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        /* د موبایل لپاره رسپانسیو ډیزاین */
+        @media (max-width: 600px) {
+            .actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .balance-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 20px 15px 25px;
+            }
+            
+            .app-logo {
+                font-size: 24px;
+            }
+            
+            .welcome {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-notification" id="notification">د دعوت کوډ کاپي شو!</div>
+    
+    <div class="container fade-in">
+        <div class="header">
+            <button class="language-btn" id="language-btn">
+                <i class="fas fa-globe"></i>
+                <span id="current-language">پشتو</span>
+            </button>
+            <div class="language-menu" id="language-menu">
+                <div class="language-option" data-lang="en">
+                    <i class="fas fa-flag-usa"></i>
+                    English
+                </div>
+                <div class="language-option" data-lang="ps">
+                    <i class="fas fa-flag"></i>
+                    پشتو
+                </div>
+                <div class="language-option" data-lang="pr">
+                    <i class="fas fa-flag"></i>
+                    دری
+                </div>
+            </div>
+            
+            <div class="app-logo">
+                <i class="fas fa-chart-line"></i>
+                <span id="app-title">افغاني ټریډر</span>
+            </div>
+            <h2 id="app-subtitle">د ډیجیټل اسعارو مسلکي پلیټفارم</h2>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-avatar" id="user-avatar">ا</div>
+            <div class="welcome" id="welcome-text">ښه راغلاست!</div>
+            <div class="email" id="user-email">user@example.com</div>
+            
+            <div class="balance-container">
+                <div class="balance-card">
+                    <div class="balance-label">
+                        <i class="fas fa-wallet"></i>
+                        <span id="total-assets-label">ټولې شتمنۍ</span>
+                    </div>
+                    <div class="balance-amount" id="total-balance">0.00 <span class="usdt-badge">USDT</span></div>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span id="total-deposit-label">ټول چارج</span>
+                    </div>
+                    <div class="balance-amount" id="total-deposit">0.00 <span class="usdt-badge">USDT</span></div>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span id="total-withdraw-label">ټول راایستل</span>
+                    </div>
+                    <div class="balance-amount" id="total-withdraw">0.00 <span class="usdt-badge">USDT</span></div>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">
+                        <i class="fas fa-chart-line"></i>
+                        <span id="total-profit-label">ټول ګټه</span>
+                    </div>
+                    <div class="balance-amount" id="total-profit">0.00 <span class="usdt-badge">USDT</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="action-btn recharge-btn" id="recharge-btn">
+                <div class="action-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="action-label" id="recharge-action-label">چارج</div>
+            </button>
+            <button class="action-btn withdraw-btn" id="withdraw-btn">
+                <div class="action-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="action-label" id="withdraw-label">راایستل</div>
+            </button>
+            <button class="action-btn tax-btn" id="tax-btn">
+                <div class="action-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div class="action-label" id="tax-label">مالیې</div>
+            </button>
+            <button class="action-btn support-btn" id="support-btn">
+                <div class="action-icon"><i class="fas fa-headset"></i></div>
+                <div class="action-label" id="support-label">ملاتړ</div>
+            </button>
+            <button class="action-btn history-btn" id="history-btn">
+                <div class="action-icon"><i class="fas fa-history"></i></div>
+                <div class="action-label" id="history-label">تاریخچه</div>
+            </button>
+            <button class="action-btn settings-btn" id="settings-btn">
+                <div class="action-icon"><i class="fas fa-cog"></i></div>
+                <div class="action-label" id="settings-label">ترتیبات</div>
+            </button>
+        </div>
+        
+        <!-- د پنډینګ تراکنشونو سکشن -->
+        <div class="pending-section" id="pending-section">
+            <div class="section-title">
+                <i class="fas fa-clock"></i>
+                <span id="pending-transactions-label">پنډینګ تراکنشونه</span>
+            </div>
+            <div id="pending-deposits"></div>
+            <div id="pending-withdrawals"></div>
+        </div>
+        
+        <div class="referral-section">
+            <div class="section-title">
+                <i class="fas fa-gift"></i>
+                <span id="referral-label">د دعوت کوډ</span>
+            </div>
+            <div class="referral-code">
+                <span class="referral-text" id="referral-code">AFGTRD-12345</span>
+                <button class="copy-btn" id="copy-btn">
+                    <i class="fas fa-copy"></i> <span id="copy-text">کاپي</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="records">
+            <div class="section-title">
+                <i class="fas fa-history"></i>
+                <span id="records-label">مالي ثبتونه</span>
+            </div>
+            
+            <div id="deposit-records">
+                <!-- د چارج ریکارډونه به دلته ښکاره شي -->
+            </div>
+            
+            <div id="withdraw-records">
+                <!-- د راایستلو ریکارډونه به دلته ښکاره شي -->
+            </div>
+        </div>
+        
+        <button class="logout-btn" id="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> <span id="logout-text">وتل</span>
+        </button>
+    </div>
+
+    <script>
+        // د Firebase کانفیګوریشن
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOM2PzdNzdHEvBxqZ9FF0zh6p9jQ-ItPo",
+            authDomain: "afghan-crypto-trader.firebaseapp.com",
+            databaseURL: "https://afghan-crypto-trader-default-rtdb.firebaseio.com",
+            projectId: "afghan-crypto-trader",
+            storageBucket: "afghan-crypto-trader.appspot.com",
+            messagingSenderId: "600812001044",
+            appId: "1:600812001044:web:0e54c213b8191b25665401",
+            measurementId: "G-R7XE5HQ7V8"
+        };
+
+        // د Firebase انیشیالایز کول
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // د ژبو ټرانسلیشن
+        const translations = {
+            'en': {
+                'app_title': 'Afghan Trader',
+                'app_subtitle': 'Professional Digital Currency Platform',
+                'welcome': 'Welcome',
+                'total_assets': 'Total Assets',
+                'total_deposit': 'Total Deposit',
+                'total_withdraw': 'Total Withdraw',
+                'total_profit': 'Total Profit',
+                'recharge': 'Recharge',
+                'withdraw': 'Withdraw',
+                'tax': 'Tax',
+                'support': 'Support',
+                'history': 'History',
+                'settings': 'Settings',
+                'referral_code': 'Referral Code',
+                'financial_records': 'Financial Records',
+                'logout': 'Logout',
+                'deposit': 'USDT Deposit',
+                'withdrawal': 'USDT Withdrawal',
+                'tax_record': 'Tax',
+                'copy_success': 'Referral code copied!',
+                'copy': 'Copy',
+                'login_required': 'Please login to access this page',
+                'no_records': 'No records found',
+                'pending_transactions': 'Pending Transactions',
+                'pending_deposit': 'Deposit in progress',
+                'pending_withdrawal': 'Withdrawal in progress',
+                'pending': 'Pending'
+            },
+            'ps': {
+                'app_title': 'افغاني ټریډر',
+                'app_subtitle': 'د ډیجیټل اسعارو مسلکي پلیټفارم',
+                'welcome': 'ښه راغلاست',
+                'total_assets': 'ټولې شتمنۍ',
+                'total_deposit': 'ټول چارج',
+                'total_withdraw': 'ټول راایستل',
+                'total_profit': 'ټول ګټه',
+                'recharge': 'چارج',
+                'withdraw': 'راایستل',
+                'tax': 'مالیې',
+                'support': 'ملاتړ',
+                'history': 'تاریخچه',
+                'settings': 'ترتیبات',
+                'referral_code': 'د دعوت کوډ',
+                'financial_records': 'مالي ثبتونه',
+                'logout': 'وتل',
+                'deposit': 'USDT چارج',
+                'withdrawal': 'USDT راایستل',
+                'tax_record': 'مالیې',
+                'copy_success': 'د دعوت کوډ کاپي شو!',
+                'copy': 'کاپي',
+                'login_required': 'د دې پاڼې لیدو لپاره مهرباني وکړئ لاګ ان کړئ',
+                'no_records': 'هیڅ ریکارډ نشته',
+                'pending_transactions': 'پنډینګ تراکنشونه',
+                'pending_deposit': 'چارج په جریان کې',
+                'pending_withdrawal': 'راایستل په جریان کې',
+                'pending': 'پنډینګ'
+            },
+            'pr': {
+                'app_title': 'تریدر افغان',
+                'app_subtitle': 'پلتفرم حرفه‌ای ارزهای دیجیتال',
+                'welcome': 'خوش آمدید',
+                'total_assets': 'مجموع دارایی',
+                'total_deposit': 'مجموع واریز',
+                'total_withdraw': 'مجموع برداشت',
+                'total_profit': 'مجموع سود',
+                'recharge': 'شارژ',
+                'withdraw': 'برداشت',
+                'tax': 'مالیات',
+                'support': 'پشتیبانی',
+                'history': 'تاریخچه',
+                'settings': 'تنظیمات',
+                'referral_code': 'کد دعوت',
+                'financial_records': 'سوابق مالی',
+                'logout': 'خروج',
+                'deposit': 'واریز USDT',
+                'withdrawal': 'برداشت USDT',
+                'tax_record': 'مالیات',
+                'copy_success': 'کد دعوت کپی شد!',
+                'copy': 'کپی',
+                'login_required': 'لطفاً برای دسترسی به این صفحه وارد شوید',
+                'no_records': 'هیچ رکوردی یافت نشد',
+                'pending_transactions': 'تراکنش های در انتظار',
+                'pending_deposit': 'واریز در حال انجام',
+                'pending_withdrawal': 'برداشت در حال انجام',
+                'pending': 'در انتظار'
+            }
+        };
+
+        // د DOM عناصر
+        const domElements = {
+            languageBtn: document.getElementById('language-btn'),
+            currentLanguage: document.getElementById('current-language'),
+            languageMenu: document.getElementById('language-menu'),
+            notification: document.getElementById('notification'),
+            logoutBtn: document.getElementById('logout-btn'),
+            copyBtn: document.getElementById('copy-btn'),
+            rechargeBtn: document.getElementById('recharge-btn'),
+            withdrawBtn: document.getElementById('withdraw-btn'),
+            taxBtn: document.getElementById('tax-btn'),
+            supportBtn: document.getElementById('support-btn'),
+            historyBtn: document.getElementById('history-btn'),
+            settingsBtn: document.getElementById('settings-btn'),
+            userAvatar: document.getElementById('user-avatar'),
+            userEmail: document.getElementById('user-email'),
+            totalBalance: document.getElementById('total-balance'),
+            totalDeposit: document.getElementById('total-deposit'),
+            totalWithdraw: document.getElementById('total-withdraw'),
+            totalProfit: document.getElementById('total-profit'),
+            totalDepositLabel: document.getElementById('total-deposit-label'),
+            totalWithdrawLabel: document.getElementById('total-withdraw-label'),
+            totalProfitLabel: document.getElementById('total-profit-label'),
+            referralCode: document.getElementById('referral-code'),
+            welcomeText: document.getElementById('welcome-text'),
+            depositRecords: document.getElementById('deposit-records'),
+            withdrawRecords: document.getElementById('withdraw-records'),
+            pendingSection: document.getElementById('pending-section'),
+            pendingDeposits: document.getElementById('pending-deposits'),
+            pendingWithdrawals: document.getElementById('pending-withdrawals'),
+            pendingTransactionsLabel: document.getElementById('pending-transactions-label')
+        };
+
+        // د کاروونکي معلومات له Firebase څخه اخستل
+        function fetchUserData(userId) {
+            database.ref('users/' + userId).once('value')
+                .then(snapshot => {
+                    const userData = snapshot.val();
+                    if (userData) {
+                        // Calculate totals
+                        const totalDeposit = userData.deposits ? 
+                            userData.deposits.reduce((sum, deposit) => sum + deposit.amount, 0) : 0;
+                        
+                        const totalWithdraw = userData.withdrawals ? 
+                            userData.withdrawals.reduce((sum, withdrawal) => sum + withdrawal.amount, 0) : 0;
+                        
+                        const totalTax = userData.taxes ? 
+                            userData.taxes.reduce((sum, tax) => sum + tax.amount, 0) : 0;
+                        
+                        const totalProfit = (userData.balance || 0) + totalWithdraw + totalTax - totalDeposit;
+                        
+                        // Update UI
+                        domElements.totalBalance.textContent = (userData.balance || 0).toFixed(2) + ' ';
+                        domElements.totalDeposit.textContent = totalDeposit.toFixed(2) + ' ';
+                        domElements.totalWithdraw.textContent = totalWithdraw.toFixed(2) + ' ';
+                        domElements.totalProfit.textContent = totalProfit.toFixed(2) + ' ';
+                        domElements.referralCode.textContent = userData.referralCode || 'AFGTRD-12345';
+                        
+                        // د کاروونکي نوم یوازې هغه وخت ښکاره کول کله چې چارج شوی وي
+                        const lang = localStorage.getItem('userLanguage') || 'ps';
+                        
+                        if (userData.recharge && userData.recharge > 0) {
+                            const firstName = userData.name ? userData.name.split(' ')[0] : 'کاروونکی';
+                            domElements.welcomeText.textContent = translations[lang]['welcome'] + '، ' + firstName + '!';
+                        } else {
+                            domElements.welcomeText.textContent = translations[lang]['welcome'] + '!';
+                        }
+                        
+                        // د کاروونکي لومړی توری د آواتار لپاره
+                        const name = userData.name || 'کاروونکی';
+                        domElements.userAvatar.textContent = name.charAt(0);
+                        
+                        // د ریکارډونو تازه کول
+                        updateRecords(userData);
+                        
+                        // د پنډینګ تراکنشونو تازه کول
+                        updatePendingTransactions(userData);
+                    }
+                })
+                .catch(error => console.error("د معلوماتو د اخستلو کې ستونزه:", error));
+        }
+
+        // د ریکارډونو تازه کول
+        function updateRecords(userData) {
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const depositRecords = userData.deposits || [];
+            const withdrawRecords = userData.withdrawals || [];
+            const taxRecords = userData.taxes || [];
+            
+            // د چارج ریکارډونه
+            domElements.depositRecords.innerHTML = '';
+            if (depositRecords.length > 0) {
+                depositRecords.forEach(record => {
+                    const recordItem = document.createElement('div');
+                    recordItem.className = 'record-item';
+                    recordItem.innerHTML = `
+                        <div class="record-info">
+                            <div class="record-type">${translations[lang]['deposit']}</div>
+                            <div class="record-date"><i class="far fa-clock"></i> ${record.date}</div>
+                        </div>
+                        <div class="record-amount positive">+${record.amount.toFixed(2)}</div>
+                    `;
+                    domElements.depositRecords.appendChild(recordItem);
+                });
+            } else {
+                domElements.depositRecords.innerHTML = `<div class="no-records">${translations[lang]['no_records']}</div>`;
+            }
+            
+            // د راایستلو او مالیې ریکارډونه
+            domElements.withdrawRecords.innerHTML = '';
+            if (withdrawRecords.length > 0 || taxRecords.length > 0) {
+                [...withdrawRecords, ...taxRecords].forEach(record => {
+                    const recordItem = document.createElement('div');
+                    recordItem.className = 'record-item';
+                    const isTax = record.type === 'tax';
+                    
+                    recordItem.innerHTML = `
+                        <div class="record-info">
+                            <div class="record-type">${isTax ? translations[lang]['tax_record'] : translations[lang]['withdrawal']}</div>
+                            <div class="record-date"><i class="far fa-clock"></i> ${record.date}</div>
+                        </div>
+                        <div class="record-amount negative">-${record.amount.toFixed(2)}</div>
+                    `;
+                    domElements.withdrawRecords.appendChild(recordItem);
+                });
+            } else {
+                domElements.withdrawRecords.innerHTML = `<div class="no-records">${translations[lang]['no_records']}</div>`;
+            }
+        }
+
+        // د پنډینګ تراکنشونو تازه کول
+        function updatePendingTransactions(userData) {
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const pendingDeposits = userData.pendingDeposits || [];
+            const pendingWithdrawals = userData.pendingWithdrawals || [];
+            
+            // د پنډینګ چارجونه
+            domElements.pendingDeposits.innerHTML = '';
+            if (pendingDeposits.length > 0) {
+                pendingDeposits.forEach(deposit => {
+                    const pendingItem = document.createElement('div');
+                    pendingItem.className = 'pending-item';
+                    pendingItem.innerHTML = `
+                        <div class="pending-info">
+                            <div class="pending-type">${translations[lang]['pending_deposit']}</div>
+                            <div class="pending-date"><i class="far fa-clock"></i> ${deposit.date}</div>
+                        </div>
+                        <div class="pending-amount">${deposit.amount.toFixed(2)} <span class="pending-badge">${translations[lang]['pending']}</span></div>
+                    `;
+                    domElements.pendingDeposits.appendChild(pendingItem);
+                });
+            }
+            
+            // د پنډینګ راایستنې
+            domElements.pendingWithdrawals.innerHTML = '';
+            if (pendingWithdrawals.length > 0) {
+                pendingWithdrawals.forEach(withdrawal => {
+                    const pendingItem = document.createElement('div');
+                    pendingItem.className = 'pending-item';
+                    pendingItem.innerHTML = `
+                        <div class="pending-info">
+                            <div class="pending-type">${translations[lang]['pending_withdrawal']}</div>
+                            <div class="pending-date"><i class="far fa-clock"></i> ${withdrawal.date}</div>
+                        </div>
+                        <div class="pending-amount">${withdrawal.amount.toFixed(2)} <span class="pending-badge">${translations[lang]['pending']}</span></div>
+                    `;
+                    domElements.pendingWithdrawals.appendChild(pendingItem);
+                });
+            }
+            
+            // که چیرې هیڅ پنډینګ تراکنشونه نشته وي، سکشن پټ کړئ
+            if (pendingDeposits.length === 0 && pendingWithdrawals.length === 0) {
+                domElements.pendingSection.style.display = 'none';
+            } else {
+                domElements.pendingSection.style.display = 'block';
+            }
+        }
+
+        // د ژبې مینو مدیریت
+        domElements.languageBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            domElements.languageMenu.style.display = domElements.languageMenu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!domElements.languageBtn.contains(e.target) && !domElements.languageMenu.contains(e.target)) {
+                domElements.languageMenu.style.display = 'none';
+            }
+        });
+
+        // د ژبې انتخاب
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.getAttribute('data-lang');
+                domElements.currentLanguage.textContent = lang === 'en' ? 'English' : 
+                                                    lang === 'ps' ? 'پشتو' : 'دری';
+                localStorage.setItem('userLanguage', lang);
+                applyTranslations(lang);
+                domElements.languageMenu.style.display = 'none';
+                
+                // د متنونو لور بدلول
+                if (lang === 'en') {
+                    document.documentElement.dir = 'ltr';
+                } else {
+                    document.documentElement.dir = 'rtl';
+                }
+            });
+        });
+
+        // د ژبې ټرانسلیشنونه تطبیق کول
+        function applyTranslations(lang) {
+            const translation = translations[lang] || translations['ps'];
+            
+            document.getElementById('app-title').textContent = translation['app_title'];
+            document.getElementById('app-subtitle').textContent = translation['app_subtitle'];
+            document.getElementById('total-assets-label').textContent = translation['total_assets'];
+            document.getElementById('total-deposit-label').textContent = translation['total_deposit'];
+            document.getElementById('total-withdraw-label').textContent = translation['total_withdraw'];
+            document.getElementById('total-profit-label').textContent = translation['total_profit'];
+            document.getElementById('recharge-action-label').textContent = translation['recharge'];
+            document.getElementById('withdraw-label').textContent = translation['withdraw'];
+            document.getElementById('tax-label').textContent = translation['tax'];
+            document.getElementById('support-label').textContent = translation['support'];
+            document.getElementById('history-label').textContent = translation['history'];
+            document.getElementById('settings-label').textContent = translation['settings'];
+            document.getElementById('referral-label').textContent = translation['referral_code'];
+            document.getElementById('records-label').textContent = translation['financial_records'];
+            document.getElementById('logout-text').textContent = translation['logout'];
+            document.getElementById('copy-text').textContent = translation['copy'];
+            document.getElementById('pending-transactions-label').textContent = translation['pending_transactions'];
+            
+            // د کاروونکي نوم تازه کول
+            const user = auth.currentUser;
+            if (user) {
+                const userId = user.uid;
+                fetchUserData(userId);
+            }
+        }
+
+        // د اعالمیې ښکاره کول
+        function showNotification(message, type = 'success') {
+            domElements.notification.textContent = message;
+            domElements.notification.style.background = type === 'success' ? 'var(--green)' : 'var(--red)';
+            domElements.notification.style.display = 'block';
+            
+            setTimeout(() => {
+                domElements.notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // د بټنونو فعالیت
+        domElements.rechargeBtn.addEventListener('click', () => {
+            window.location.href = 'deposit.html';
+        });
+        
+        domElements.withdrawBtn.addEventListener('click', () => {
+            window.location.href = 'withdraw.html';
+        });
+        
+        domElements.taxBtn.addEventListener('click', () => {
+            window.location.href = 'tax.html';
+        });
+        
+        domElements.supportBtn.addEventListener('click', () => {
+            window.location.href = 'https://t.me/DanAlv12';
+        });
+        
+        domElements.historyBtn.addEventListener('click', () => {
+            window.location.href = 'history.html';
+        });
+        
+        domElements.settingsBtn.addEventListener('click', () => {
+            window.location.href = 'settings.html';
+        });
+
+        // د کاپي بټن فعالیت
+        domElements.copyBtn.addEventListener('click', () => {
+            const referralCode = domElements.referralCode.textContent;
+            navigator.clipboard.writeText(referralCode).then(() => {
+                const lang = localStorage.getItem('userLanguage') || 'ps';
+                showNotification(translations[lang]['copy_success']);
+            });
+        });
+
+        // د وتلو بټن
+        domElements.logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch(error => {
+                console.error('د وتلو کې ستونزه:', error);
+                showNotification('د وتلو پر مهال ستونزه رامنځته شوه', 'error');
+            });
+        });
+
+        // د ذخیره شوې ژبې لوستل او تطبیق کول
+        const savedLanguage = localStorage.getItem('userLanguage') || 'ps';
+        applyTranslations(savedLanguage);
+        domElements.currentLanguage.textContent = savedLanguage === 'en' ? 'English' : 
+                                              savedLanguage === 'ps' ? 'پشتو' : 'دری';
+        
+        // د لور تنظیمول د ژبې په اساس
+        if (savedLanguage === 'en') {
+            document.documentElement.dir = 'ltr';
+        }
+
+        // د Firebase د اتینټیکیشن حالت څارنه
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // د کاروونکي بریښنالیک ښودل
+                domElements.userEmail.textContent = user.email;
+                
+                // د کاروونکي معلومات اخستل
+                fetchUserData(user.uid);
+            } else {
+                // که کاروونکی لاګ ان نه وي، لاګ ان پاڼې ته لیږدول
+                window.location.href = 'index.html';
+            }
+        });
+
+        // د افغانستان بیرغ د عنوانونو لپاره
+        const titles = document.querySelectorAll('.section-title, .app-logo');
+        titles.forEach(title => {
+            const flag = document.createElement('span');
+            flag.className = 'afghan-flag';
+            title.appendChild(flag);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="pr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afghan Trader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --green: #006341;
+            --red: #CE1126;
+            --black: #000000;
+            --gold: #D3A329;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #006341 0%, #CE1126 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, var(--green) 0%, var(--black) 50%, var(--red) 100%);
+        }
+        
+        .language-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--green), var(--gold), var(--red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .tab-switcher {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            position: relative;
+            opacity: 0.7;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            opacity: 1;
+            font-weight: bold;
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gold);
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            padding-right: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 40px;
+            transform: translateY(-25%);
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size:18px;
+        }
+        
+        .country-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .country-selector select {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .country-selector select:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, var(--green), var(--gold));
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(90deg, var(--green), var(--red));
+            transform: translateY(-2px);
+        }
+        
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .forgot-password a {
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .trust-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .trust-icons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        
+        .trust-icon {
+            font-size: 24px;
+            color: var(--gold);
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 50px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+            display: none;
+            z-index: 100;
+        }
+        
+        .language-dropdown.show {
+            display: block;
+        }
+        
+        .language-option {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .language-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* مودال موفقیت */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .success-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .success-content {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border-top: 5px solid var(--gold);
+        }
+        
+        .success-icon {
+            font-size: 50px;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .success-btn {
+            background: var(--gold);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        /* مودال بازیابی رمز عبور */
+        .reset-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .reset-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .reset-content {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border-top: 5px solid var(--gold);
+        }
+        
+        .reset-icon {
+            font-size: 50px;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        
+        .reset-message {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .reset-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .reset-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        
+        .reset-btn {
+            background: var(--gold);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+        
+        .reset-btn.cancel {
+            background: var(--red);
+            color: white;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .tab-btn {
+                font-size: 16px;
+                padding: 8px 12px;
+            }
+            
+            .success-content, .reset-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- د ژبې بټن -->
+        <button class="language-btn" id="language-btn">
+            <i class="fas fa-globe"></i> <span id="current-language">دری</span>
+        </button>
+        
+        <div class="language-dropdown" id="language-dropdown">
+            <div class="language-option" onclick="changeLanguage('en')">English</div>
+            <div class="language-option" onclick="changeLanguage('ps')">پشتو</div>
+            <div class="language-option" onclick="changeLanguage('pr')">دری</div>
+        </div>
+        
+        <div class="logo">
+            <h1>Afghan Trader</h1>
+            <p>Afghan-crypto-trader</p>
+        </div>
+        
+        <div class="tab-switcher">
+            <button class="tab-btn active" id="login-tab">ننوتل</button>
+            <button class="tab-btn" id="register-tab">نوی حساب</button>
+        </div>
+        
+        <div class="form-container">
+            <!-- د ننوتلو فورم -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">برېښنالیک</label>
+                    <input type="email" id="login-email" required>
+                    <div class="error-message" id="login-email-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">پاسورډ</label>
+                    <input type="password" id="login-password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('login-password')">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                    <div class="error-message" id="login-password-error"></div>
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="#" id="forgot-password">پاسورډ هیر شوی؟</a>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="login-btn">ننوتل</button>
+            </form>
+            
+            <!-- د ثبت نام فورم -->
+            <form id="register-form" class="hidden">
+                <div class="form-group">
+                    <label for="register-username">د کارن نوم</label>
+                    <input type="text" id="register-username" required>
+                    <div class="error-message" id="register-username-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-email">برېښنالیک</label>
+                    <input type="email" id="register-email" required>
+                    <div class="error-message" id="register-email-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-phone">د موبایل شمیره</label>
+                    <div class="country-selector">
+                        <select id="country-code">
+                            <option value="+93" selected>🇦🇫 +93 AF</option>
+                            <option value="+1">🇺🇸 +1 US</option>
+                            <option value="+44">🇬🇧 +44 GB</option>
+                            <option value="+98">🇮🇷 +98 IR</option>
+                            <option value="+92">🇵🇰 +92 PK</option>
+                            <option value="+91">🇮🇳 +91 IN</option>
+                        </select>
+                        <input type="tel" id="register-phone" required>
+                    </div>
+                    <div class="error-message" id="register-phone-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-password">پاسورډ</label>
+                    <input type="password" id="register-password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('register-password')">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                    <div class="error-message" id="register-password-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-confirm-password">پاسورډ تایید کړئ</label>
+                    <input type="password" id="register-confirm-password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('register-confirm-password')">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                    <div class="error-message" id="register-confirm-password-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="referral-code">د دعوت کوډ (اختیاري)</label>
+                    <input type="text" id="referral-code">
+                </div>
+                
+                <button type="submit" class="submit-btn" id="register-btn">حاس جوړول</button>
+            </form>
+            
+            <!-- د تروت برخه -->
+            <div class="trust-section">
+                <p>موږ ته باور وکړئ</p>
+                <div class="trust-icons">
+                    <i class="fas fa-shield-alt trust-icon"></i>
+                    <i class="fas fa-lock trust-icon"></i>
+                    <i class="fas fa-user-shield trust-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- د موفقیت پیغام مودال -->
+    <div class="success-modal" id="success-modal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="success-message" id="success-message">بریالۍ ننوتل!</div>
+            <button class="success-btn" id="success-btn">OK</button>
+        </div>
+    </div>
+
+    <!-- مودال بازیابی رمز عبور -->
+    <div class="reset-modal" id="reset-modal">
+        <div class="reset-content">
+            <div class="reset-icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <div class="reset-message" id="reset-message">د پاسورډ د بیاکتنې لینک لپاره خپل برېښنالیک دننه کړئ</div>
+            <input type="email" id="reset-email" class="reset-input" placeholder="برېښنالیک">
+            <div class="error-message" id="reset-email-error"></div>
+            <button class="reset-btn" id="reset-submit">لیږل</button>
+            <button class="reset-btn cancel" id="reset-cancel">لغوه کول</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOM2PzdNzdHEvBxqZ9FF0zh6p9jQ-ItPo",
+            authDomain: "afghan-crypto-trader.firebaseapp.com",
+            databaseURL: "https://afghan-crypto-trader-default-rtdb.firebaseio.com",
+            projectId: "afghan-crypto-trader",
+            storageBucket: "afghan-crypto-trader.appspot.com",
+            messagingSenderId: "600812001044",
+            appId: "1:600812001044:web:0e54c213b8191b25665401",
+            measurementId: "G-R7XE5HQ7V8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // د ثبت نام پروسه
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearErrors();
+            
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const countryCode = document.getElementById('country-code').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const referralCode = document.getElementById('referral-code').value;
+            
+            // د اعتبار وړتیا
+            let isValid = true;
+            
+            if (username.length < 3) {
+                showError('register-username-error', getTranslation('username_short'));
+                isValid = false;
+            }
+            
+            if (!validateEmail(email)) {
+                showError('register-email-error', getTranslation('invalid_email'));
+                isValid = false;
+            }
+            
+            if (!validatePhone(phone)) {
+                showError('register-phone-error', getTranslation('invalid_phone'));
+                isValid = false;
+            }
+            
+            if (password.length < 6) {
+                showError('register-password-error', getTranslation('password_short'));
+                isValid = false;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('register-confirm-password-error', getTranslation('password_mismatch'));
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    
+                    set(ref(database, 'users/' + user.uid), {
+                        username: username,
+                        email: email,
+                        phone: countryCode + phone,
+                        referralCode: referralCode,
+                        createdAt: new Date().toISOString(),
+                        language: currentLanguage
+                    });
+                    
+                    showSuccess(getTranslation('registration_success'), 'login');
+                })
+                .catch((error) => {
+                    handleFirebaseError(error);
+                });
+        });
+
+        // د ننوتلو پروسه
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearErrors();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // د اعتبار وړتیا
+            let isValid = true;
+            
+            if (!validateEmail(email)) {
+                showError('login-email-error', getTranslation('invalid_email'));
+                isValid = false;
+            }
+            
+            if (password.length < 6) {
+                showError('login-password-error', getTranslation('password_short'));
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    showSuccess(getTranslation('login_success'), 'dashboard');
+                })
+                .catch((error) => {
+                    handleFirebaseError(error);
+                });
+        });
+
+        // نمایش مودال بازیابی رمز عبور
+        document.getElementById('forgot-password').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('reset-modal').classList.add('active');
+            document.getElementById('reset-email').value = '';
+            document.getElementById('reset-email-error').style.display = 'none';
+        });
+
+        // بستن مودال بازیابی رمز عبور
+        document.getElementById('reset-cancel').addEventListener('click', () => {
+            document.getElementById('reset-modal').classList.remove('active');
+        });
+
+        // ارسال لینک بازیابی
+        document.getElementById('reset-submit').addEventListener('click', () => {
+            const email = document.getElementById('reset-email').value;
+            document.getElementById('reset-email-error').style.display = 'none';
+            
+            if (!validateEmail(email)) {
+                document.getElementById('reset-email-error').textContent = getTranslation('invalid_email');
+                document.getElementById('reset-email-error').style.display = 'block';
+                return;
+            }
+            
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    document.getElementById('reset-message').textContent = getTranslation('reset_link_sent');
+                    document.getElementById('reset-email').style.display = 'none';
+                    document.getElementById('reset-submit').style.display = 'none';
+                    document.getElementById('reset-cancel').textContent = getTranslation('ok');
+                    
+                    setTimeout(() => {
+                        document.getElementById('reset-modal').classList.remove('active');
+                        // بازگرداندن مودال به حالت اولیه
+                        setTimeout(() => {
+                            document.getElementById('reset-message').textContent = getTranslation('enter_email_for_reset');
+                            document.getElementById('reset-email').style.display = 'block';
+                            document.getElementById('reset-submit').style.display = 'inline-block';
+                            document.getElementById('reset-cancel').textContent = getTranslation('cancel');
+                        }, 300);
+                    }, 2000);
+                })
+                .catch((error) => {
+                    let errorMessage = getTranslation('unknown_error');
+                    
+                    switch(error.code) {
+                        case 'auth/user-not-found':
+                            errorMessage = getTranslation('user_not_found');
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = getTranslation('invalid_email');
+                            break;
+                        case 'auth/too-many-requests':
+                            errorMessage = getTranslation('too_many_requests');
+                            break;
+                    }
+                    
+                    document.getElementById('reset-email-error').textContent = errorMessage;
+                    document.getElementById('reset-email-error').style.display = 'block';
+                });
+        });
+
+        // د موفقیت پیغام ښکاره کول
+        function showSuccess(message, redirectTo) {
+            document.getElementById('success-message').textContent = message;
+            document.getElementById('success-modal').classList.add('active');
+            
+            document.getElementById('success-btn').onclick = function() {
+                if (redirectTo === 'login') {
+                    // د ثبت نام وروسته د ننوتلو پاڼې ته لیږد
+                    document.getElementById('register-form').classList.add('hidden');
+                    document.getElementById('login-form').classList.remove('hidden');
+                    document.getElementById('register-tab').classList.remove('active');
+                    document.getElementById('login-tab').classList.add('active');
+                    document.getElementById('success-modal').classList.remove('active');
+                } else if (redirectTo === 'dashboard') {
+                    // د ننوتلو وروسته د ډشبورډ پاڼې ته لیږد
+                    window.location.href = 'dashboard.html';
+                }
+            };
+        }
+
+        // د اعتبار وړتیا فعالیتونه
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function validatePhone(phone) {
+            const re = /^[0-9]{9,15}$/;
+            return re.test(phone);
+        }
+        
+        function showError(id, message) {
+            const element = document.getElementById(id);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+        
+        function handleFirebaseError(error) {
+            let errorMessage = getTranslation('unknown_error');
+            
+            switch(error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage = getTranslation('email_in_use');
+                    showError('register-email-error', errorMessage);
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = getTranslation('invalid_email');
+                    showError('login-email-error', errorMessage);
+                    break;
+                case 'auth/weak-password':
+                    errorMessage = getTranslation('password_weak');
+                    showError('register-password-error', errorMessage);
+                    break;
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                    errorMessage = getTranslation('invalid_credentials');
+                    showError('login-password-error', errorMessage);
+                    break;
+                default:
+                    alert(errorMessage);
+            }
+        }
+    </script>
+
+    <script>
+        // د ژبو تنظیمات
+        let currentLanguage = 'pr';
+        const translations = {
+            en: {
+                login: "Login",
+                register: "Register",
+                username: "Username",
+                email: "Email",
+                phone: "Phone Number",
+                password: "Password",
+                confirm_password: "Confirm Password",
+                referral_code: "Referral Code (Optional)",
+                forgot_password: "Forgot Password?",
+                password_mismatch: "Passwords do not match!",
+                registration_success: "Registration successful! Please login now.",
+                login_success: "Login successful! Redirecting to dashboard...",
+                reset_link_sent: "Reset link sent to your email",
+                enter_email_for_reset: "Enter your email to receive reset link",
+                trust_us: "Trust Us",
+                username_short: "Username must be at least 3 characters",
+                invalid_email: "Invalid email address",
+                invalid_phone: "Invalid phone number",
+                password_short: "Password must be at least 6 characters",
+                password_weak: "Password is too weak",
+                invalid_credentials: "Invalid email or password",
+                email_in_use: "Email already in use",
+                unknown_error: "An error occurred",
+                cancel: "Cancel",
+                user_not_found: "User with this email not found",
+                too_many_requests: "Too many requests. Please try again later.",
+                reset_instructions: "Enter your email to receive reset link",
+                ok: "OK"
+            },
+            ps: {
+                login: "ننوتل",
+                register: "نوی حساب",
+                username: "د کارن نوم",
+                email: "برېښنالیک",
+                phone: "د موبایل شمیره",
+                password: "پاسورډ",
+                confirm_password: "پاسورډ تایید کړئ",
+                referral_code: "د دعوت کوډ (اختیاري)",
+                forgot_password: "پاسورډ هیر شوی؟",
+                password_mismatch: "پاسورډونه مطابقت نلري!",
+                registration_success: "بریالۍ ثبت نام! اوس ننوتل وکړئ",
+                login_success: "بریالۍ ننوتل! د ډشبورډ پاڼې ته لیږدول کیږي...",
+                reset_link_sent: "د بیاکتنې لینک ستاسو برېښنالیک ته لیږل شو",
+                enter_email_for_reset: "د بیاکتنې لینک ترلاسه کولو لپاره خپل برېښنالیک ولیکئ",
+                trust_us: "موږ ته باور وکړئ",
+                username_short: "د کارن نوم باید لږ تر لږه 3 حروف ولري",
+                invalid_email: "ناسم برېښنالیک آدرس",
+                invalid_phone: "ناسم تلیفون شمیره",
+                password_short: "پاسورډ باید لږ تر لږه 6 حروف ولري",
+                password_weak: "پاسورډ ډیر ضعیف دی",
+                invalid_credentials: "ناسم برېښنالیک یا پاسورډ",
+                email_in_use: "دا برېښنالیک دمخه کارول شوی دی",
+                unknown_error: "یوه تېروتنه رامنځته شوه",
+                cancel: "لغوه کول",
+                user_not_found: "د دې برېښنالیک سره کارونکی ونه موندل شو",
+                too_many_requests: "ډیرې غوښتنې. مهرباني وکړئ وروسته بیا هڅه وکړئ.",
+                reset_instructions: "د پاسورډ د بیاکتنې لینک لپاره خپل برېښنالیک دننه کړئ",
+                ok: "هو"
+            },
+            pr: {
+                login: "ورود",
+                register: "ثبت نام",
+                username: "نام کاربری",
+                email: "ایمیل",
+                phone: "شماره تلفن",
+                password: "رمز عبور",
+                confirm_password: "تأیید رمز عبور",
+                referral_code: "کد دعوت (اختیاری)",
+                forgot_password: "رمز عبور را فراموش کرده‌اید؟",
+                password_mismatch: "رمزهای عبور مطابقت ندارند!",
+                registration_success: "ثبت نام موفقیت آمیز بود! لطفا وارد شوید",
+                login_success: "ورود موفقیت آمیز بود! در حال انتقال به داشبورد...",
+                reset_link_sent: "لینک بازنشانی به ایمیل شما ارسال شد",
+                enter_email_for_reset: "برای دریافت لینک بازنشانی ایمیل خود را وارد کنید",
+                trust_us: "به ما اعتماد کنید",
+                username_short: "نام کاربری باید حداقل 3 کاراکتر باشد",
+                invalid_email: "آدرس ایمیل نامعتبر است",
+                invalid_phone: "شماره تلفن نامعتبر است",
+                password_short: "رمز عبور باید حداقل 6 کاراکتر باشد",
+                password_weak: "رمز عبور بسیار ضعیف است",
+                invalid_credentials: "ایمیل یا رمز عبور نامعتبر است",
+                email_in_use: "این ایمیل قبلا استفاده شده است",
+                unknown_error: "خطایی رخ داد",
+                cancel: "لغو",
+                user_not_found: "کاربری با این ایمیل یافت نشد",
+                too_many_requests: "درخواست‌های زیادی انجام شده. لطفاً بعداً تلاش کنید.",
+                reset_instructions: "برای دریافت لینک بازنشانی ایمیل خود را وارد کنید",
+                ok: "تأیید"
+            }
+        };
+
+        // د ژبې بدلون
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('current-language').textContent = 
+                lang === 'en' ? 'English' : lang === 'ps' ? 'پشتو' : 'دری';
+            updateTexts();
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+            document.getElementById('language-dropdown').classList.remove('show');
+        }
+
+        // د متنونو تازه کول
+        function updateTexts() {
+            // ټیبونه
+            document.getElementById('login-tab').textContent = getTranslation('login');
+            document.getElementById('register-tab').textContent = getTranslation('register');
+            
+            // د ننوتلو فورم
+            document.querySelector('#login-form label[for="login-email"]').textContent = getTranslation('email');
+            document.querySelector('#login-form label[for="login-password"]').textContent = getTranslation('password');
+            document.getElementById('login-btn').textContent = getTranslation('login');
+            document.getElementById('forgot-password').textContent = getTranslation('forgot_password');
+            
+            // د ثبت نام فورم
+            document.querySelector('#register-form label[for="register-username"]').textContent = getTranslation('username');
+            document.querySelector('#register-form label[for="register-email"]').textContent = getTranslation('email');
+            document.querySelector('#register-form label[for="register-phone"]').textContent = getTranslation('phone');
+            document.querySelector('#register-form label[for="register-password"]').textContent = getTranslation('password');
+            document.querySelector('#register-form label[for="register-confirm-password"]').textContent = getTranslation('confirm_password');
+            document.querySelector('#register-form label[for="referral-code"]').textContent = getTranslation('referral_code');
+            document.getElementById('register-btn').textContent = getTranslation('register');
+            
+            // نور عناصر
+            document.querySelector('.trust-section p').textContent = getTranslation('trust_us');
+            
+            // مودال بازیابی رمز عبور
+            document.getElementById('reset-message').textContent = getTranslation('reset_instructions');
+            document.getElementById('reset-submit').textContent = getTranslation('register');
+            document.getElementById('reset-cancel').textContent = getTranslation('cancel');
+            document.getElementById('reset-email').placeholder = getTranslation('email');
+        }
+
+        function getTranslation(key) {
+            return translations[currentLanguage][key] || key;
+        }
+
+        // د پاسورډ ښکاره/پټ کول
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+
+        // د ټیبونو بدلون
+        document.getElementById('login-tab').addEventListener('click', () => {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('register-form').classList.add('hidden');
+            document.getElementById('login-tab').classList.add('active');
+            document.getElementById('register-tab').classList.remove('active');
+        });
+        
+        document.getElementById('register-tab').addEventListener('click', () => {
+            document.getElementById('register-form').classList.remove('hidden');
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('register-tab').classList.add('active');
+            document.getElementById('login-tab').classList.remove('active');
+        });
+
+        // د ژبې ډراپ ډاون مینو
+        document.getElementById('language-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('language-dropdown').classList.toggle('show');
+        });
+
+        // د ډاکیومنټ کلیک
+        document.addEventListener('click', () => {
+            document.getElementById('language-dropdown').classList.remove('show');
+        });
+
+        // پیل کې د دری ژبه تنظیمول
+        changeLanguage('pr');
+    </script>
+</body>
+</html>

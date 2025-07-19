@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afghani Trader - د کاروونکو تاریخچه</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --green: #006341;
+            --red: #CE1126;
+            --black: #1a1a1a;
+            --gold: #D3A329;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --blue: #0088cc;
+            --white: #ffffff;
+            --card-bg: #ffffff;
+            --body-bg: #f5f7fa;
+            --profit-green: #28a745;
+            --telegram-blue: #2AABEE;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--body-bg);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--black);
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--green) 0%, var(--black) 50%, var(--red) 100%);
+            color: var(--white);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 4px solid var(--gold);
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-3px);
+        }
+        
+        .app-title {
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .app-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .history-container {
+            padding: 1px;
+        }
+        
+        .language-switcher {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .language-btn {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .language-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            right: 0;
+        }
+        
+        .language-dropdown a {
+            color: var(--black);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+            transition: background-color 0.3s;
+        }
+        
+        .language-dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .language-switcher:hover .language-dropdown {
+            display: block;
+        }
+        
+        .search-container {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 50px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: var(--white);
+        }
+        
+        .search-input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(0, 99, 65, 0.1);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+            font-size: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f5f7fa;
+            font-weight: 600;
+            color: var(--green);
+            position: sticky;
+            top: 0;
+            font-size: 15px;
+        }
+        
+        tr {
+            transition: all 0.2s ease;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+            transform: translateX(-5px);
+        }
+        
+        .profit {
+            color: var(--profit-green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+        
+        .profit i {
+            font-size: 14px;
+        }
+        
+        .profit-amount {
+            direction: ltr;
+            display: inline-block;
+        }
+        
+        .profit-label {
+            font-size: 12px;
+            color: var(--dark-gray);
+            display: block;
+            margin-top: 2px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 8px;
+        }
+        
+        .page-btn {
+            padding: 8px 15px;
+            border: 1px solid #e0e0e0;
+            background: var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .page-btn:hover {
+            background: #f5f5f5;
+        }
+        
+        .page-btn.active {
+            background: var(--green);
+            color: var(--white);
+            border-color: var(--green);
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            border-color: var(--green);
+        }
+        
+        .telegram-link {
+            color: var(--telegram-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background-color: rgba(42, 171, 238, 0.1);
+        }
+        
+        .telegram-link:hover {
+            background-color: rgba(42, 171, 238, 0.2);
+            text-decoration: none;
+        }
+        
+        .telegram-link i {
+            font-size: 18px;
+        }
+        
+        .deposit-amount {
+            font-weight: 600;
+            color: var(--black);
+        }
+        
+        .province-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #f0f0f0;
+            color: var(--black);
+            font-size: 14px;
+        }
+        
+        .english-name {
+            font-weight: 500;
+            color: #555;
+            display: block;
+            margin-top: 3px;
+            font-size: 13px;
+            direction: ltr;
+            text-align: right;
+        }
+        
+        .join-date {
+            color: var(--dark-gray);
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .back-btn {
+                padding: 10px 15px;
+                font-size: 16px;
+            }
+            
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .telegram-link {
+                padding: 3px 6px;
+                font-size: 12px;
+            }
+            
+            .telegram-link i {
+                font-size: 14px;
+            }
+            
+            .profit {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+                <span id="back-text">بیرته</span>
+            </button>
+            <div class="app-logo">
+                <h1 class="app-title" id="page-title">د کاروونکو تاریخچه</h1>
+                <p class="app-subtitle" id="page-subtitle">د ټولو کاروونکو مالیي معلومات</p>
+            </div>
+        </div>
+        
+        <div class="history-container">
+            <div class="language-switcher">
+                <button class="language-btn">
+                    <i class="fas fa-language"></i>
+                    <span id="current-language">پښتو</span>
+                    <i class="fas fa-caret-down"></i>
+                </button>
+                <div class="language-dropdown">
+                    <a href="#" data-lang="ps">پښتو</a>
+                    <a href="#" data-lang="pr">دری</a>
+                    <a href="#" data-lang="en">English</a>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="search-input" placeholder="د کاروونکو په نوم، ولایت یا تلګرام ادرس ولټوئ...">
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th id="col-avatar">عکس</th>
+                            <th id="col-name">نوم / Name</th>
+                            <th id="col-province">ولایت / Province</th>
+                            <th id="col-deposit">Deposit (USDT)</th>
+                            <th id="col-profit">ورځني ګټه / Daily Profit</th>
+                            <th id="col-telegram">تلګرام / Telegram</th>
+                            <th id="col-join-date">د ننوتلو نیټه / Join Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table">
+                        <!-- د کاروونکو لیست به دلته ښکاره شي -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- د پاڼو شمار به دلته ښکاره شي -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // د کاروونکو محلي معلومات with English versions
+        const usersData = [
+            {
+                id: 1,
+                name: "احمد شاه",
+                englishName: "Ahmad Shah",
+                province: "کابل",
+                englishProvince: "Kabul",
+                deposit: 1500.50,
+                profit: 45.25,
+                telegram: "ahmadshah123",
+                joinDate: "2023-05-15",
+                avatar: "https://i.pravatar.cc/150?img=1"
+            },
+            {
+                id: 2,
+                name: "زهرا محمدي",
+                englishName: "Zahra Mohammadi",
+                province: "هرات",
+                englishProvince: "Herat",
+                deposit: 3200.00,
+                profit: 96.00,
+                telegram: "zahra_mohammadi",
+                joinDate: "2023-06-20",
+                avatar: "https://i.pravatar.cc/150?img=2"
+            },
+            {
+                id: 3,
+                name: "علي رضا",
+                englishName: "Ali Reza",
+                province: "بلخ",
+                englishProvince: "Balkh",
+                deposit: 2750.75,
+                profit: 82.50,
+                telegram: "alireza_afg",
+                joinDate: "2023-07-10",
+                avatar: "https://i.pravatar.cc/150?img=3"
+            },
+            {
+                id: 4,
+                name: "نازنین احمدي",
+                englishName: "Nazanin Ahmadi",
+                province: "ننگرهار",
+                englishProvince: "Nangarhar",
+                deposit: 1800.25,
+                profit: 54.00,
+                telegram: "naz_ahmadi",
+                joinDate: "2023-08-05",
+                avatar: "https://i.pravatar.cc/150?img=4"
+            },
+            {
+                id: 5,
+                name: "کریم الله",
+                englishName: "Karimullah",
+                province: "کندهار",
+                englishProvince: "Kandahar",
+                deposit: 4200.00,
+                profit: 126.00,
+                telegram: "karimullah_kdr",
+                joinDate: "2023-09-12",
+                avatar: "https://i.pravatar.cc/150?img=5"
+            },
+            {
+                id: 6,
+                name: "لیلا حسيني",
+                englishName: "Leila Hussaini",
+                province: "کابل",
+                englishProvince: "Kabul",
+                deposit: 1950.50,
+                profit: 58.50,
+                telegram: "leila_hussaini",
+                joinDate: "2023-10-18",
+                avatar: "https://i.pravatar.cc/150?img=6"
+            },
+            {
+                id: 7,
+                name: "محمد جواد",
+                englishName: "Mohammad Jawad",
+                province: "هرات",
+                englishProvince: "Herat",
+                deposit: 3100.00,
+                profit: 93.00,
+                telegram: "m_jawad_hr",
+                joinDate: "2023-11-22",
+                avatar: "https://i.pravatar.cc/150?img=7"
+            },
+            {
+                id: 8,
+                name: "فاطمه کریمی",
+                englishName: "Fatima Karimi",
+                province: "بلخ",
+                englishProvince: "Balkh",
+                deposit: 2250.75,
+                profit: 67.50,
+                telegram: "fatima_karimi",
+                joinDate: "2023-12-05",
+                avatar: "https://i.pravatar.cc/150?img=8"
+            },
+            {
+                id: 9,
+                name: "حسین احمد",
+                englishName: "Hussain Ahmad",
+                province: "ننگرهار",
+                englishProvince: "Nangarhar",
+                deposit: 2800.00,
+                profit: 84.00,
+                telegram: "hussain_ahmad",
+                joinDate: "2024-01-15",
+                avatar: "https://i.pravatar.cc/150?img=9"
+            },
+            {
+                id: 10,
+                name: "سارا محمدي",
+                englishName: "Sara Mohammadi",
+                province: "کندهار",
+                englishProvince: "Kandahar",
+                deposit: 3500.25,
+                profit: 105.00,
+                telegram: "sara_mohammadi",
+                joinDate: "2024-02-20",
+                avatar: "https://i.pravatar.cc/150?img=10"
+            },
+            {
+                id: 11,
+                name: "رحیم الله",
+                englishName: "Rahimullah",
+                province: "کابل",
+                englishProvince: "Kabul",
+                deposit: 1900.50,
+                profit: 57.00,
+                telegram: "rahimullah_kbl",
+                joinDate: "2024-03-10",
+                avatar: "https://i.pravatar.cc/150?img=11"
+            },
+            {
+                id: 12,
+                name: "نرګس احمدي",
+                englishName: "Nargis Ahmadi",
+                province: "هرات",
+                englishProvince: "Herat",
+                deposit: 2650.00,
+                profit: 79.50,
+                telegram: "nargis_ahmadi",
+                joinDate: "2024-04-05",
+                avatar: "https://i.pravatar.cc/150?img=12"
+            },
+            {
+                id: 13,
+                name: "جان اسمیت",
+                englishName: "John Smith",
+                province: "نیویورک",
+                englishProvince: "New York",
+                deposit: 5800.75,
+                profit: 174.00,
+                telegram: "john_smith_ny",
+                joinDate: "2024-01-10",
+                avatar: "https://i.pravatar.cc/150?img=13"
+            },
+            {
+                id: 14,
+                name: "امیلی ویلسون",
+                englishName: "Emily Wilson",
+                province: "کالیفرنیا",
+                englishProvince: "California",
+                deposit: 7200.00,
+                profit: 216.00,
+                telegram: "emily_wilson_ca",
+                joinDate: "2024-02-15",
+                avatar: "https://i.pravatar.cc/150?img=14"
+            },
+            {
+                id: 15,
+                name: "دیوید براون",
+                englishName: "David Brown",
+                province: "تگزاس",
+                englishProvince: "Texas",
+                deposit: 4900.25,
+                profit: 147.00,
+                telegram: "david_brown_tx",
+                joinDate: "2024-03-20",
+                avatar: "https://i.pravatar.cc/150?img=15"
+            },
+            {
+                id: 16,
+                name: "سارا جانسون",
+                englishName: "Sarah Johnson",
+                province: "فلوریدا",
+                englishProvince: "Florida",
+                deposit: 6300.50,
+                profit: 189.00,
+                telegram: "sarah_johnson_fl",
+                joinDate: "2024-04-25",
+                avatar: "https://i.pravatar.cc/150?img=16"
+            },
+            {
+                id: 17,
+                name: "مایکل دیویس",
+                englishName: "Michael Davis",
+                province: "ایلینوی",
+                englishProvince: "Illinois",
+                deposit: 5400.75,
+                profit: 162.00,
+                telegram: "michael_davis_il",
+                joinDate: "2024-05-30",
+                avatar: "https://i.pravatar.cc/150?img=17"
+            },
+            {
+                id: 18,
+                name: "جسیکا مارتینز",
+                englishName: "Jessica Martinez",
+                province: "آریزونا",
+                englishProvince: "Arizona",
+                deposit: 6800.00,
+                profit: 204.00,
+                telegram: "jessica_martinez_az",
+                joinDate: "2024-06-05",
+                avatar: "https://i.pravatar.cc/150?img=18"
+            },
+            {
+                id: 19,
+                name: "رابرت تیلور",
+                englishName: "Robert Taylor",
+                province: "پنسیلوانیا",
+                englishProvince: "Pennsylvania",
+                deposit: 5900.25,
+                profit: 177.00,
+                telegram: "robert_taylor_pa",
+                joinDate: "2024-07-10",
+                avatar: "https://i.pravatar.cc/150?img=19"
+            },
+            {
+                id: 20,
+                name: "جنیفر اندرسون",
+                englishName: "Jennifer Anderson",
+                province: "اوهایو",
+                englishProvince: "Ohio",
+                deposit: 7100.50,
+                profit: 213.00,
+                telegram: "jennifer_anderson_oh",
+                joinDate: "2024-08-15",
+                avatar: "https://i.pravatar.cc/150?img=20"
+            }
+        ];
+
+        // د ژبو تنظیمات
+        const translations = {
+            'en': {
+                'page_title': 'List of verified users',
+                'page_subtitle': 'The list of all verified users',
+                'back': 'Back',
+                'col_avatar': 'Photo',
+                'col_name': 'Name',
+                'col_province': 'Province',
+                'col_deposit': 'Deposit (USDT)',
+                'col_profit': 'Daily Profit',
+                'col_telegram': 'Telegram',
+                'col_join_date': 'Join Date',
+                'search_placeholder': 'Search by name, province or telegram...',
+                'no_users': 'No users found',
+                'current_lang': 'English'
+            },
+            'ps': {
+                'page_title': 'د ټولو تایید شویو کاروونکو لیست ',
+                'page_subtitle': ' د ټولو تایید شویو کاروونکو لیست',
+                'back': 'بیرته',
+                'col_avatar': 'عکس',
+                'col_name': 'نوم / Name',
+                'col_province': 'ولایت / Province',
+                'col_deposit': 'Deposit (USDT)',
+                'col_profit': 'ورځني ګټه / Daily Profit',
+                'col_telegram': 'تلګرام / Telegram',
+                'col_join_date': 'د ننوتلو نیټه / Join Date',
+                'search_placeholder': 'د کاروونکو په نوم، ولایت یا تلګرام ادرس ولټوئ...',
+                'no_users': 'هیڅ کاروونکی ونه موندل شو',
+                'current_lang': 'پښتو'
+            },
+            'pr': {
+                'page_title': 'فهرست تمام کاربران تأییدشده  ',
+                'page_subtitle': 'فهرست تمام کاربران ثبت‌نام‌شده ',
+                'back': 'بازگشت',
+                'col_avatar': 'عکس',
+                'col_name': 'نام / Name',
+                'col_province': 'ولایت / Province',
+                'col_deposit': 'Deposit (USDT)',
+                'col_profit': 'سود روزانه / Daily Profit',
+                'col_telegram': 'تلگرام / Telegram',
+                'col_join_date': 'تاریخ عضویت / Join Date',
+                'search_placeholder': 'جستجو بر اساس نام، ولایت یا آدرس تلگرام...',
+                'no_users': 'کاربری یافت نشد',
+                'current_lang': 'دری'
+            }
+        };
+
+        // د ژبې تطبیق کول
+        function applyTranslations(lang) {
+            const translation = translations[lang] || translations['ps'];
+            
+            document.getElementById('page-title').textContent = translation['page_title'];
+            document.getElementById('page-subtitle').textContent = translation['page_subtitle'];
+            document.getElementById('back-text').textContent = translation['back'];
+            document.getElementById('col-avatar').textContent = translation['col_avatar'];
+            document.getElementById('col-name').textContent = translation['col_name'];
+            document.getElementById('col-province').textContent = translation['col_province'];
+            document.getElementById('col-deposit').textContent = translation['col_deposit'];
+            document.getElementById('col-profit').textContent = translation['col_profit'];
+            document.getElementById('col-telegram').textContent = translation['col_telegram'];
+            document.getElementById('col-join-date').textContent = translation['col_join_date'];
+            document.getElementById('search-input').placeholder = translation['search_placeholder'];
+            document.getElementById('current-language').textContent = translation['current_lang'];
+        }
+
+        // د کاروونکو لیست لوډول
+        function loadUsers(searchTerm = '', page = 1, itemsPerPage = 10) {
+            let usersArray = [...usersData];
+                
+            // د لټون تطبیق
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                usersArray = usersArray.filter(user => 
+                    user.name.toLowerCase().includes(term) || 
+                    user.englishName.toLowerCase().includes(term) ||
+                    user.province.toLowerCase().includes(term) ||
+                    user.englishProvince.toLowerCase().includes(term) ||
+                    user.telegram.toLowerCase().includes(term)
+                );
+            }
+            
+            // د پاڼې بندي کول
+            const totalPages = Math.ceil(usersArray.length / itemsPerPage);
+            const startIndex = (page - 1) * itemsPerPage;
+            const paginatedUsers = usersArray.slice(startIndex, startIndex + itemsPerPage);
+            
+            // د جدول تازه کول
+            renderUsersTable(paginatedUsers);
+            renderPagination(page, totalPages);
+        }
+
+        // د کاروونکو جدول تازه کول
+        function renderUsersTable(users) {
+            const tableBody = document.getElementById('users-table');
+            tableBody.innerHTML = '';
+            
+            if (users.length === 0) {
+                const lang = localStorage.getItem('userLanguage') || 'ps';
+                const translation = translations[lang];
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center;">${translation['no_users']}</td></tr>`;
+                return;
+            }
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${user.avatar}" alt="${user.name}" class="user-avatar"></td>
+                    <td>
+                        ${user.name}
+                        <span class="english-name">${user.englishName}</span>
+                    </td>
+                    <td>
+                        <span class="province-badge">${user.province}</span>
+                        <span class="english-name">${user.englishProvince}</span>
+                    </td>
+                    <td class="deposit-amount">${user.deposit.toFixed(2)}</td>
+                    <td class="profit">
+                        <span class="profit-amount">
+                            <i class="fas fa-arrow-up"></i>
+                            ${user.profit.toFixed(2)} USDT
+                        </span>
+                        <span class="profit-label">Daily Profit</span>
+                    </td>
+                    <td>
+                        <a href="https://t.me/${user.telegram}" class="telegram-link" target="_blank">
+                            <i class="fab fa-telegram"></i>
+                            @${user.telegram}
+                        </a>
+                    </td>
+                    <td class="join-date">
+                        ${user.joinDate}
+                        <span class="english-name">Join Date</span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // د پاڼې بندي تازه کول
+        function renderPagination(currentPage, totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // لومړی پاڼه
+            if (currentPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'page-btn';
+                firstBtn.innerHTML = '<i class="fas fa-angle-double-right"></i>';
+                firstBtn.addEventListener('click', () => {
+                    loadUsers(document.getElementById('search-input').value.trim(), 1);
+                });
+                pagination.appendChild(firstBtn);
+                
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
+                prevBtn.addEventListener('click', () => {
+                    loadUsers(document.getElementById('search-input').value.trim(), currentPage - 1);
+                });
+                pagination.appendChild(prevBtn);
+            }
+            
+            // شمېرنې
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    loadUsers(document.getElementById('search-input').value.trim(), i);
+                });
+                pagination.appendChild(pageBtn);
+            }
+            
+            // وروستۍ پاڼه
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.innerHTML = '<i class="fas fa-angle-left"></i>';
+                nextBtn.addEventListener('click', () => {
+                    loadUsers(document.getElementById('search-input').value.trim(), currentPage + 1);
+                });
+                pagination.appendChild(nextBtn);
+                
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'page-btn';
+                lastBtn.innerHTML = '<i class="fas fa-angle-double-left"></i>';
+                lastBtn.addEventListener('click', () => {
+                    loadUsers(document.getElementById('search-input').value.trim(), totalPages);
+                });
+                pagination.appendChild(lastBtn);
+            }
+        }
+
+        // د ژبې بدلون
+        document.querySelectorAll('.language-dropdown a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = link.getAttribute('data-lang');
+                localStorage.setItem('userLanguage', lang);
+                applyTranslations(lang);
+                loadUsers();
+            });
+        });
+
+        // د لټون فعالیت
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            loadUsers(e.target.value.trim());
+        });
+
+        // د سیستم پیلول
+        function initialize() {
+            const savedLanguage = localStorage.getItem('userLanguage') || 'ps';
+            applyTranslations(savedLanguage);
+            loadUsers();
+        }
+
+        // پاڼه چې لوډ شي
+        window.onload = initialize;
+    </script>
+</body>
+</html>

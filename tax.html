@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afghani Trade - د مالیاتو سیستم</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --green: #006341;
+            --red: #CE1126;
+            --black: #000000;
+            --gold: #D3A329;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --blue: #1a5fb4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--black);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--green) 0%, var(--black) 50%, var(--red) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+        }
+        
+        .app-logo {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .info-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .info-value {
+            font-weight: 700;
+            color: var(--green);
+        }
+        
+        .bonus-value {
+            color: var(--blue);
+        }
+        
+        .timer-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--green);
+            margin: 10px 0;
+        }
+        
+        .referral-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .referral-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .referral-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .notification.success {
+            background: var(--green);
+            color: white;
+        }
+        
+        .notification.error {
+            background: var(--red);
+            color: white;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--green), #004d33);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-disabled {
+            background: var(--dark-gray) !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" id="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span id="back-text">بیرته</span>
+            </button>
+            <div class="app-logo">
+                <i class="fas fa-coins"></i>
+                <span id="page-title">Afghani Trade - د مالیاتو سیستم</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="info-card">
+                <h3><i class="fas fa-wallet"></i> <span id="account-info-label">د حساب معلومات</span></h3>
+                <div class="info-row">
+                    <span class="info-label" id="balance-label">شته بلانس:</span>
+                    <span class="info-value" id="balance">0 USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" id="tax-rate-label">د مالیې نرخ:</span>
+                    <span class="info-value" id="tax-rate">3%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" id="last-profit-label">وروستۍ ګټه:</span>
+                    <span class="info-value" id="last-profit">نه ده</span>
+                </div>
+            </div>
+            
+            <div class="timer-container">
+                <h4><i class="fas fa-clock"></i> <span id="next-profit-label">د راتلونکي ګټې وخت</span></h4>
+                <div class="timer" id="timer">00:00:00</div>
+                <small id="timer-note">د راتلونکي ګټې لپاره مهرباني وکړئ صبر وکړئ</small>
+            </div>
+            
+            <div class="info-card">
+                <h3><i class="fas fa-gift"></i> <span id="referral-benefits-label">د دعوت ګټې</span></h3>
+                <div class="info-row">
+                    <span class="info-label" id="referral-count-label">د دعوت شویو شمیر:</span>
+                    <span class="info-value" id="referral-count">0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" id="bonus-rate-label">د ګټې اضافه نرخ:</span>
+                    <span class="bonus-value" id="bonus-rate">0%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label" id="today-profit-label">د نن ورځې ګټه:</span>
+                    <span class="info-value" id="today-profit">0 USDT</span>
+                </div>
+                
+                <div id="referral-list-container" style="display: none;">
+                    <h4><i class="fas fa-users"></i> <span id="referral-list-label">د دعوت شویو لیست</span></h4>
+                    <div class="referral-list" id="referral-list">
+                        <!-- د دعوت شویو لیست به دلته ښکاره شي -->
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" id="calculate-btn">
+                <i class="fas fa-calculator"></i> <span id="calculate-btn-label">د ګټې محاسبه</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // د Firebase کانفیګوریشن
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOM2PzdNzdHEvBxqZ9FF0zh6p9jQ-ItPo",
+            authDomain: "afghan-crypto-r.firebaseapp.com",
+            databaseURL: "https://afghan-crypto-trader-default-rtdb.firebaseio.com",
+            projectId: "afghan-crypto-trader",
+            storageBucket: "afghan-crypto-trader.appspot.com",
+            messagingSenderId: "600812001044",
+            appId: "1:600812001044:web:0e54c213b8191b25665401",
+            measurementId: "G-R7XE5HQ7V8"
+        };
+
+        // د Firebase انیشیالایز کول
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // د ژبو تنظیمات
+        const translations = {
+            'en': {
+                'page_title': 'Afghani Trade ',
+                'back': 'Back',
+                'account_info': 'Account Information',
+                'balance': 'Available Balance:',
+                'tax_rate': 'Tax Rate:',
+                'last_profit': 'Last Profit:',
+                'next_profit': 'Next Profit Time',
+                'referral_benefits': 'Referral Benefits',
+                'referral_count': 'Number of Referrals:',
+                'bonus_rate': 'Bonus Rate:',
+                'today_profit': "Today's Profit:",
+                'referral_list': 'Referral List',
+                'calculate_btn': 'Calculate Profit',
+                'timer_note': 'Please wait for the next profit calculation',
+                'profit_success': 'Profit calculated successfully',
+                'wait_message': 'You can calculate profit again in',
+                'never': 'Never',
+                'hours': 'hours',
+                'minutes': 'minutes',
+                'seconds': 'seconds'
+            },
+            'ps': {
+                'page_title':'AfghaniTrade',
+                'back': 'بیرته',
+                'account_info': 'د حساب معلومات',
+                'balance': 'شته بلانس:',
+                'tax_rate': 'د مالیې نرخ:',
+                'last_profit': 'وروستۍ ګټه:',
+                'next_profit': 'د راتلونکي ګټې وخت',
+                'referral_benefits': 'د دعوت ګټې',
+                'referral_count': 'د دعوت شویو شمیر:',
+                'bonus_rate': 'د ګټې اضافه نرخ:',
+                'today_profit': 'د نن ورځې ګټه:',
+                'referral_list': 'د دعوت شویو لیست',
+                'calculate_btn': 'د ګټې محاسبه',
+                'timer_note': 'د راتلونکي ګټې لپاره مهرباني وکړئ صبر وکړئ',
+                'profit_success': 'په بریالیتوب سره ګټه محاسبه شوه',
+                'wait_message': 'تاسو کولی شئ په',
+                'never': 'نه ده',
+                'hours': 'ساعتونو',
+                'minutes': 'دقیقو',
+                'seconds': 'ثانیو'
+            },
+            'pr': {
+                'page_title': 'Afghani Trade',
+                'back': 'بازگشت',
+                'account_info': 'اطلاعات حساب',
+                'balance': 'موجودی:',
+                'tax_rate': 'نرخ مالیات:',
+                'last_profit': 'سود آخر:',
+                'next_profit': 'زمان سود بعدی',
+                'referral_benefits': 'مزایای دعوت',
+                'referral_count': 'تعداد دعوت شده‌ها:',
+                'bonus_rate': 'نرخ پاداش:',
+                'today_profit': 'سود امروز:',
+                'referral_list': 'لیست دعوت شده‌ها',
+                'calculate_btn': 'محاسبه سود',
+                'timer_note': 'لطفاً برای محاسبه سود بعدی صبر کنید',
+                'profit_success': 'سود با موفقیت محاسبه شد',
+                'wait_message': 'شما می‌توانید بعد از',
+                'never': 'هرگز',
+                'hours': 'ساعت',
+                'minutes': 'دقیقه',
+                'seconds': 'ثانیه'
+            }
+        };
+
+        // د ژبې تطبیق کول
+        function applyTranslations(lang) {
+            const translation = translations[lang] || translations['ps'];
+            
+            document.getElementById('page-title').textContent = translation['page_title'];
+            document.getElementById('back-text').textContent = translation['back'];
+            document.getElementById('account-info-label').textContent = translation['account_info'];
+            document.getElementById('balance-label').textContent = translation['balance'];
+            document.getElementById('tax-rate-label').textContent = translation['tax_rate'];
+            document.getElementById('last-profit-label').textContent = translation['last_profit'];
+            document.getElementById('next-profit-label').textContent = translation['next_profit'];
+            document.getElementById('referral-benefits-label').textContent = translation['referral_benefits'];
+            document.getElementById('referral-count-label').textContent = translation['referral_count'];
+            document.getElementById('bonus-rate-label').textContent = translation['bonus_rate'];
+            document.getElementById('today-profit-label').textContent = translation['today_profit'];
+            document.getElementById('referral-list-label').textContent = translation['referral_list'];
+            document.getElementById('calculate-btn-label').textContent = translation['calculate_btn'];
+            document.getElementById('timer-note').textContent = translation['timer_note'];
+        }
+
+        // د اعالمیې ښکاره کول
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // د تایمر تنظیمول
+        function startTimer(endTime) {
+            const timerElement = document.getElementById('timer');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const translation = translations[lang];
+            
+            calculateBtn.classList.add('btn-disabled');
+            calculateBtn.disabled = true;
+            
+            const timerInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+                
+                if (distance <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = "00:00:00";
+                    calculateBtn.classList.remove('btn-disabled');
+                    calculateBtn.disabled = false;
+                    document.getElementById('calculate-btn-label').textContent = translation['calculate_btn'];
+                    return;
+                }
+                
+                // محاسبه ساعت، دقیقه و ثانیه
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                timerElement.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update button text
+                document.getElementById('calculate-btn-label').textContent = 
+                    `${translation['wait_message']} ${hours}${translation['hours']} ${minutes}${translation['minutes']} ${seconds}${translation['seconds']}`;
+                
+            }, 1000);
+        }
+
+        // د ګټې محاسبه او ذخیره کول
+        async function calculateAndSaveProfit() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const translation = translations[lang];
+            
+            try {
+                const userRef = await database.ref(`users/${user.uid}`).once('value');
+                const userData = userRef.val();
+                
+                if (!userData || !userData.balance) {
+                    showNotification('د کاروونکي معلومات نه دي موندل شوي', 'error');
+                    return;
+                }
+                
+                const balance = parseFloat(userData.balance) || 0;
+                const referrals = userData.referrals || {};
+                const referralCount = Object.keys(referrals).length;
+                
+                // د ګټې د نرخ محاسبه کول
+                let taxRate = 3; // د اساسي نرخ 3%
+                
+                if (referralCount >= 20) {
+                    taxRate = 5;
+                } else if (referralCount >= 10) {
+                    taxRate = 4;
+                }
+                
+                // د ګټې محاسبه
+                const profit = (balance * taxRate) / 100;
+                
+                // د وروستۍ ګټې نیټه چک کول
+                const now = new Date();
+                const lastProfitDate = userData.lastProfitDate ? new Date(userData.lastProfitDate) : null;
+                
+                // که 24 ساعت نه دي تیر شوي
+                if (lastProfitDate && (now - lastProfitDate) < 24 * 60 * 60 * 1000) {
+                    const nextProfitTime = new Date(lastProfitDate.getTime() + 24 * 60 * 60 * 1000);
+                    const remainingTime = nextProfitTime - now;
+                    startTimer(nextProfitTime);
+                    return;
+                }
+                
+                // د ګټې اضافه کول
+                const newBalance = balance + profit;
+                
+                // د ډیٹابیس تازه کول
+                await database.ref(`users/${user.uid}`).update({
+                    balance: newBalance,
+                    lastProfit: profit,
+                    lastProfitDate: now.toISOString(),
+                    taxRate: taxRate
+                });
+                
+                // د مالیې ریکارډ ذخیره کول
+                const taxRecordId = database.ref().child('taxRecords').push().key;
+                await database.ref(`taxRecords/${taxRecordId}`).set({
+                    userId: user.uid,
+                    userEmail: user.email,
+                    userName: user.displayName || 'N/A',
+                    previousBalance: balance,
+                    profit: profit,
+                    taxRate: taxRate,
+                    newBalance: newBalance,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    referralCount: referralCount
+                });
+                
+                // د UI تازه کول
+                loadUserData(user.uid);
+                showNotification(translation['profit_success']);
+                
+                // د تایمر شروع کول (24 ساعتونه)
+                const nextProfitTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+                startTimer(nextProfitTime);
+                
+            } catch (error) {
+                console.error('د ګټې محاسبه کې تېروتنه:', error);
+                showNotification('د ګټې محاسبه کې تېروتنه', 'error');
+            }
+        }
+
+        // د کاروونکي معلومات لوډول
+        async function loadUserData(userId) {
+            try {
+                const userRef = await database.ref(`users/${userId}`).once('value');
+                const userData = userRef.val();
+                
+                if (userData) {
+                    const lang = localStorage.getItem('userLanguage') || 'ps';
+                    const translation = translations[lang];
+                    
+                    // د بلانس او مالیې معلومات
+                    document.getElementById('balance').textContent = `${userData.balance || 0} USDT`;
+                    
+                    const taxRate = userData.taxRate || 3;
+                    document.getElementById('tax-rate').textContent = `${taxRate}%`;
+                    
+                    // د وروستۍ ګټې معلومات
+                    if (userData.lastProfit) {
+                        document.getElementById('last-profit').textContent = 
+                            `${userData.lastProfit.toFixed(2)} USDT`;
+                    } else {
+                        document.getElementById('last-profit').textContent = translation['never'];
+                    }
+                    
+                    // د دعوت شویو معلومات
+                    const referrals = userData.referrals || {};
+                    const referralCount = Object.keys(referrals).length;
+                    document.getElementById('referral-count').textContent = referralCount;
+                    
+                    // د ګټې اضافه نرخ
+                    let bonusRate = 0;
+                    if (referralCount >= 20) {
+                        bonusRate = 2; // ټول 5% (3% اساسي + 2% اضافه)
+                    } else if (referralCount >= 10) {
+                        bonusRate = 1; // ټول 4% (3% اساسي + 1% اضافه)
+                    }
+                    
+                    document.getElementById('bonus-rate').textContent = `+${bonusRate}%`;
+                    
+                    // د نن ورځې ګټه محاسبه
+                    const balance = parseFloat(userData.balance) || 0;
+                    const todayProfit = (balance * taxRate) / 100;
+                    document.getElementById('today-profit').textContent = 
+                        `${todayProfit.toFixed(2)} USDT`;
+                    
+                    // که دعوت شوي وي، لیست ښکاره کړئ
+                    if (referralCount > 0) {
+                        document.getElementById('referral-list-container').style.display = 'block';
+                        const referralList = document.getElementById('referral-list');
+                        referralList.innerHTML = '';
+                        
+                        for (const [key, value] of Object.entries(referrals)) {
+                            const item = document.createElement('div');
+                            item.className = 'referral-item';
+                            item.innerHTML = `
+                                <span>${value.email || 'ناپېژاند'}</span>
+                                <span>${new Date(value.timestamp).toLocaleDateString()}</span>
+                            `;
+                            referralList.appendChild(item);
+                        }
+                    }
+                    
+                    // د تایمر تنظیمول که وروستۍ ګټه ترلاسه شوې وي
+                    if (userData.lastProfitDate) {
+                        const lastProfitDate = new Date(userData.lastProfitDate);
+                        const nextProfitTime = new Date(lastProfitDate.getTime() + 24 * 60 * 60 * 1000);
+                        const now = new Date();
+                        
+                        if (nextProfitTime > now) {
+                            startTimer(nextProfitTime);
+                        } else {
+                            document.getElementById('calculate-btn').classList.remove('btn-disabled');
+                            document.getElementById('calculate-btn').disabled = false;
+                            document.getElementById('calculate-btn-label').textContent = translation['calculate_btn'];
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('د کاروونکي د معلوماتو لوډولو تېروتنه:', error);
+            }
+        }
+
+        // د محاسبه بټن کلیک
+        document.getElementById('calculate-btn').addEventListener('click', calculateAndSaveProfit);
+
+        // د بیرته تګ بټن
+        document.getElementById('back-btn').addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+
+        // د اتینټیکیشن حالت څارنه
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // د ژبې تنظیمول
+                const savedLanguage = localStorage.getItem('userLanguage') || 'ps';
+                applyTranslations(savedLanguage);
+                
+                // د کاروونکي معلومات لوډول
+                loadUserData(user.uid);
+                
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

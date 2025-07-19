@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afghani Trader - تنظیمات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --green: #006341;
+            --red: #CE1126;
+            --black: #000000;
+            --gold: #D3A329;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --blue: #1a5fb4;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--black);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--green) 0%, var(--black) 50%, var(--red) 100%);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+            position: relative;
+        }
+        
+        .app-logo {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--white);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .settings-section {
+            margin-bottom: 25px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: var(--white);
+        }
+        
+        select:focus, input:focus {
+            border-color: var(--green);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 99, 65, 0.2);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--green), #004d33);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-disabled {
+            background: var(--dark-gray) !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .notification.success {
+            background: var(--green);
+            color: var(--white);
+        }
+        
+        .notification.error {
+            background: var(--red);
+            color: var(--white);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .withdraw-method {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--white);
+        }
+        
+        .withdraw-method:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .withdraw-method.selected {
+            border-color: var(--green);
+            background-color: rgba(0, 99, 65, 0.05);
+        }
+        
+        .withdraw-method input[type="radio"] {
+            width: auto;
+        }
+        
+        .method-details {
+            flex: 1;
+        }
+        
+        .method-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .method-info {
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+        
+        /* د LTR ژبو لپاره سټایل */
+        [dir="ltr"] {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        [dir="ltr"] .back-btn {
+            left: auto;
+            right: 15px;
+        }
+        
+        .afghan-flag {
+            display: inline-block;
+            width: 20px;
+            height: 12px;
+            background: linear-gradient(to right, #000000 33%, #CE1126 33%, #CE1126 66%, #006341 66%);
+            border-radius: 2px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        
+        /* د موبایل لپاره رسپانسیو ډیزاین */
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .app-logo {
+                font-size: 20px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .settings-section {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" id="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span id="back-text">بیرته</span>
+            </button>
+            <div class="app-logo">
+                <i class="fas fa-cog"></i>
+                <span id="page-title">Afghani Trader - تنظیمات</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- د ژبې تنظیمات -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-language"></i>
+                    <span id="language-title">د ژبې تنظیمات</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="language-select" id="language-label">خپله غوره ژبه وټاکئ:</label>
+                    <select id="language-select" class="form-control">
+                        <option value="ps">پشتو</option>
+                        <option value="pr">دری</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" id="save-language-btn">
+                    <i class="fas fa-save"></i> <span id="save-language-text">ذخیره کول</span>
+                </button>
+            </div>
+            
+            <!-- د را ایستلو معلومات -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span id="withdraw-title">د را ایستلو معلومات</span>
+                </div>
+                
+                <div class="form-group">
+                    <label id="withdraw-method-label">د را ایستلو میتود:</label>
+                    
+                    <div class="withdraw-method selected" data-method="usdt">
+                        <input type="radio" name="withdraw-method" id="usdt-method" checked>
+                        <div class="method-details">
+                            <div class="method-name">USDT (TRC20)</div>
+                            <div class="method-info" id="usdt-info">د خپل USDT کیف آدرس دننه کړئ</div>
+                        </div>
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    
+                    <div class="withdraw-method" data-method="bank">
+                        <input type="radio" name="withdraw-method" id="bank-method">
+                        <div class="method-details">
+                            <div class="method-name" id="bank-method-name">بانکي حواله</div>
+                            <div class="method-info" id="bank-info">د خپل بانکي حساب معلومات دننه کړئ</div>
+                        </div>
+                        <i class="fas fa-university"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="usdt-address-group">
+                    <label for="usdt-address" id="usdt-address-label">USDT کیف آدرس (TRC20):</label>
+                    <input type="text" id="usdt-address" placeholder="TQrDpX9XkQZ6ZbZwK5x7JmZ9XkQZ6ZbZwK5">
+                </div>
+                
+                <div class="form-group" id="bank-info-group" style="display: none;">
+                    <label for="bank-name" id="bank-name-label">د بانک نوم:</label>
+                    <input type="text" id="bank-name" placeholder="د بانک نوم">
+                    
+                    <label for="account-name" id="account-name-label" style="margin-top: 10px;">د حساب نوم:</label>
+                    <input type="text" id="account-name" placeholder="د حساب نوم">
+                    
+                    <label for="account-number" id="account-number-label" style="margin-top: 10px;">د حساب شمیره:</label>
+                    <input type="text" id="account-number" placeholder="د حساب شمیره">
+                    
+                    <label for="iban" id="iban-label" style="margin-top: 10px;">IBAN (که شته):</label>
+                    <input type="text" id="iban" placeholder="IBAN">
+                </div>
+                
+                <button class="btn btn-primary" id="save-withdraw-btn">
+                    <i class="fas fa-save"></i> <span id="save-withdraw-text">ذخیره کول</span>
+                </button>
+            </div>
+            
+            <!-- د پاسورډ بدلون -->
+            <div class="settings-section">
+                <div class="section-title">
+                    <i class="fas fa-lock"></i>
+                    <span id="password-title">د پاسورډ بدلون</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="current-password" id="current-password-label">اوسنی پاسورډ:</label>
+                    <input type="password" id="current-password" placeholder="اوسنی پاسورډ">
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-password" id="new-password-label">نوی پاسورډ:</label>
+                    <input type="password" id="new-password" placeholder="نوی پاسورډ">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password" id="confirm-password-label">نوی پاسورډ تایید کړئ:</label>
+                    <input type="password" id="confirm-password" placeholder="نوی پاسورډ تکرار">
+                </div>
+                
+                <button class="btn btn-primary" id="change-password-btn">
+                    <i class="fas fa-key"></i> <span id="change-password-text">پاسورډ بدلون</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // د Firebase کانفیګوریشن
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOM2PzdNzdHEvBxqZ9FF0zh6p9jQ-ItPo",
+            authDomain: "afghan-crypto-trader.firebaseapp.com",
+            databaseURL: "https://afghan-crypto-trader-default-rtdb.firebaseio.com",
+            projectId: "afghan-crypto-trader",
+            storageBucket: "afghan-crypto-trader.appspot.com",
+            messagingSenderId: "600812001044",
+            appId: "1:600812001044:web:0e54c213b8191b25665401",
+            measurementId: "G-R7XE5HQ7V8"
+        };
+
+        // د Firebase انیشیالایز کول
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // د ژبو تنظیمات
+        const translations = {
+            'en': {
+                'page_title': 'Afghani Trader - Settings',
+                'back': 'Back',
+                'language_title': 'Language Settings',
+                'language_label': 'Choose your preferred language:',
+                'save_language': 'Save',
+                'withdraw_title': 'Withdrawal Information',
+                'withdraw_method_label': 'Withdrawal Method:',
+                'usdt_info': 'Enter your USDT wallet address',
+                'bank_method_name': 'Bank Transfer',
+                'bank_info': 'Enter your bank account details',
+                'usdt_address_label': 'USDT Wallet Address (TRC20):',
+                'bank_name_label': 'Bank Name:',
+                'account_name_label': 'Account Name:',
+                'account_number_label': 'Account Number:',
+                'iban_label': 'IBAN (if available):',
+                'save_withdraw': 'Save',
+                'password_title': 'Change Password',
+                'current_password_label': 'Current Password:',
+                'new_password_label': 'New Password:',
+                'confirm_password_label': 'Confirm New Password:',
+                'change_password': 'Change Password',
+                'language_saved': 'Language saved successfully!',
+                'withdraw_saved': 'Withdrawal information saved successfully!',
+                'password_changed': 'Password changed successfully!',
+                'password_error': 'Password must be at least 6 characters',
+                'password_mismatch': 'New passwords do not match',
+                'wrong_password': 'Current password is incorrect',
+                'error_occurred': 'An error occurred, please try again',
+                'select_method': 'Please select a withdrawal method',
+                'fill_fields': 'Please fill all required fields'
+            },
+            'ps': {
+                'page_title': 'Afghani Trader - تنظیمات',
+                'back': 'بیرته',
+                'language_title': 'د ژبې تنظیمات',
+                'language_label': 'خپله غوره ژبه وټاکئ:',
+                'save_language': 'ذخیره کول',
+                'withdraw_title': 'د را ایستلو معلومات',
+                'withdraw_method_label': 'د را ایستلو میتود:',
+                'usdt_info': 'د خپل USDT کیف آدرس دننه کړئ',
+                'bank_method_name': 'بانکي حواله',
+                'bank_info': 'د خپل بانکي حساب معلومات دننه کړئ',
+                'usdt_address_label': 'USDT کیف آدرس (TRC20):',
+                'bank_name_label': 'د بانک نوم:',
+                'account_name_label': 'د حساب نوم:',
+                'account_number_label': 'د حساب شمیره:',
+                'iban_label': 'IBAN (که شته):',
+                'save_withdraw': 'ذخیره کول',
+                'password_title': 'د پاسورډ بدلون',
+                'current_password_label': 'اوسنی پاسورډ:',
+                'new_password_label': 'نوی پاسورډ:',
+                'confirm_password_label': 'نوی پاسورډ تایید کړئ:',
+                'change_password': 'پاسورډ بدلون',
+                'language_saved': 'ژبه په بریالیتوب سره ذخیره شوه!',
+                'withdraw_saved': 'د را ایستلو معلومات په بریالیتوب سره ذخیره شول!',
+                'password_changed': 'پاسورډ په بریالیتوب سره بدل شو!',
+                'password_error': 'پاسورډ باید لږ تر لږه 6 حروف ولري',
+                'password_mismatch': 'نوي پاسورډونه سره مطابقت نلري',
+                'wrong_password': 'اوسنی پاسورډ ناسم دی',
+                'error_occurred': 'یوه تېروتنه رامنځته شوه، مهرباني وکړئ بیا هڅه وکړئ',
+                'select_method': 'مهرباني وکړئ د را ایستلو میتود وټاکئ',
+                'fill_fields': 'مهرباني وکړئ ټول اړین فیلډونه ډک کړئ'
+            },
+            'pr': {
+                'page_title': 'Afghani Trader - تنظیمات',
+                'back': 'بازگشت',
+                'language_title': 'تنظیمات زبان',
+                'language_label': 'زبان مورد نظر خود را انتخاب کنید:',
+                'save_language': 'ذخیره',
+                'withdraw_title': 'اطلاعات برداشت',
+                'withdraw_method_label': 'روش برداشت:',
+                'usdt_info': 'آدرس کیف پول USDT خود را وارد کنید',
+                'bank_method_name': 'حواله بانکی',
+                'bank_info': 'مشخصات حساب بانکی خود را وارد کنید',
+                'usdt_address_label': 'آدرس کیف پول USDT (TRC20):',
+                'bank_name_label': 'نام بانک:',
+                'account_name_label': 'نام حساب:',
+                'account_number_label': 'شماره حساب:',
+                'iban_label': 'IBAN (در صورت وجود):',
+                'save_withdraw': 'ذخیره',
+                'password_title': 'تغییر رمز عبور',
+                'current_password_label': 'رمز عبور فعلی:',
+                'new_password_label': 'رمز عبور جدید:',
+                'confirm_password_label': 'تکرار رمز عبور جدید:',
+                'change_password': 'تغییر رمز عبور',
+                'language_saved': 'زبان با موفقیت ذخیره شد!',
+                'withdraw_saved': 'اطلاعات برداشت با موفقیت ذخیره شد!',
+                'password_changed': 'رمز عبور با موفقیت تغییر یافت!',
+                'password_error': 'رمز عبور باید حداقل 6 کاراکتر باشد',
+                'password_mismatch': 'رمزهای عبور جدید مطابقت ندارند',
+                'wrong_password': 'رمز عبور فعلی نادرست است',
+                'error_occurred': 'خطایی رخ داد، لطفاً دوباره تلاش کنید',
+                'select_method': 'لطفاً روش برداشت را انتخاب کنید',
+                'fill_fields': 'لطفاً تمام فیلدهای الزامی را پر کنید'
+            }
+        };
+
+        // د ژبې تطبیق کول
+        function applyTranslations(lang) {
+            const translation = translations[lang] || translations['ps'];
+            
+            document.getElementById('page-title').textContent = translation['page_title'];
+            document.getElementById('back-text').textContent = translation['back'];
+            document.getElementById('language-title').textContent = translation['language_title'];
+            document.getElementById('language-label').textContent = translation['language_label'];
+            document.getElementById('save-language-text').textContent = translation['save_language'];
+            document.getElementById('withdraw-title').textContent = translation['withdraw_title'];
+            document.getElementById('withdraw-method-label').textContent = translation['withdraw_method_label'];
+            document.getElementById('usdt-info').textContent = translation['usdt_info'];
+            document.getElementById('bank-method-name').textContent = translation['bank_method_name'];
+            document.getElementById('bank-info').textContent = translation['bank_info'];
+            document.getElementById('usdt-address-label').textContent = translation['usdt_address_label'];
+            document.getElementById('bank-name-label').textContent = translation['bank_name_label'];
+            document.getElementById('account-name-label').textContent = translation['account_name_label'];
+            document.getElementById('account-number-label').textContent = translation['account_number_label'];
+            document.getElementById('iban-label').textContent = translation['iban_label'];
+            document.getElementById('save-withdraw-text').textContent = translation['save_withdraw'];
+            document.getElementById('password-title').textContent = translation['password_title'];
+            document.getElementById('current-password-label').textContent = translation['current_password_label'];
+            document.getElementById('new-password-label').textContent = translation['new_password_label'];
+            document.getElementById('confirm-password-label').textContent = translation['confirm_password_label'];
+            document.getElementById('change-password-text').textContent = translation['change_password'];
+            
+            // د HTML لور تنظیمول
+            if (lang === 'en') {
+                document.documentElement.dir = 'ltr';
+            } else {
+                document.documentElement.dir = 'rtl';
+            }
+        }
+
+        // د اعالمیې ښکاره کول
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // د را ایستلو میتود بدلون
+        document.querySelectorAll('.withdraw-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.withdraw-method').forEach(m => {
+                    m.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                
+                const methodType = this.getAttribute('data-method');
+                if (methodType === 'usdt') {
+                    document.getElementById('usdt-address-group').style.display = 'block';
+                    document.getElementById('bank-info-group').style.display = 'none';
+                } else {
+                    document.getElementById('usdt-address-group').style.display = 'none';
+                    document.getElementById('bank-info-group').style.display = 'block';
+                }
+            });
+        });
+
+        // د ژبې ذخیره کول
+        document.getElementById('save-language-btn').addEventListener('click', function() {
+            const lang = document.getElementById('language-select').value;
+            localStorage.setItem('userLanguage', lang);
+            applyTranslations(lang);
+            
+            const user = auth.currentUser;
+            if (user) {
+                database.ref(`users/${user.uid}`).update({
+                    language: lang
+                }).then(() => {
+                    const translation = translations[lang] || translations['ps'];
+                    showNotification(translation['language_saved']);
+                });
+            } else {
+                const translation = translations[lang] || translations['ps'];
+                showNotification(translation['language_saved']);
+            }
+        });
+
+        // د را ایستلو معلومات ذخیره کول
+        document.getElementById('save-withdraw-btn').addEventListener('click', function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const translation = translations[lang];
+            
+            const selectedMethod = document.querySelector('.withdraw-method.selected').getAttribute('data-method');
+            let withdrawData = { method: selectedMethod };
+            
+            if (selectedMethod === 'usdt') {
+                const usdtAddress = document.getElementById('usdt-address').value.trim();
+                if (!usdtAddress) {
+                    showNotification(translation['fill_fields'], 'error');
+                    return;
+                }
+                withdrawData.usdtAddress = usdtAddress;
+            } else {
+                const bankName = document.getElementById('bank-name').value.trim();
+                const accountName = document.getElementById('account-name').value.trim();
+                const accountNumber = document.getElementById('account-number').value.trim();
+                
+                if (!bankName || !accountName || !accountNumber) {
+                    showNotification(translation['fill_fields'], 'error');
+                    return;
+                }
+                
+                withdrawData.bankName = bankName;
+                withdrawData.accountName = accountName;
+                withdrawData.accountNumber = accountNumber;
+                withdrawData.iban = document.getElementById('iban').value.trim();
+            }
+            
+            database.ref(`users/${user.uid}/withdrawInfo`).update(withdrawData)
+                .then(() => {
+                    showNotification(translation['withdraw_saved']);
+                })
+                .catch(error => {
+                    console.error('Error saving withdraw info:', error);
+                    showNotification(translation['error_occurred'], 'error');
+                });
+        });
+
+        // د پاسورډ بدلون
+        document.getElementById('change-password-btn').addEventListener('click', function() {
+            const user = auth.currentUser;
+            if (!user) return;
+            
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const translation = translations[lang];
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword.length < 6) {
+                showNotification(translation['password_error'], 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification(translation['password_mismatch'], 'error');
+                return;
+            }
+            
+            // د پاسورډ تایید او بدلون
+            const credential = firebase.auth.EmailAuthProvider.credential(
+                user.email, 
+                currentPassword
+            );
+            
+            user.reauthenticateWithCredential(credential)
+                .then(() => {
+                    return user.updatePassword(newPassword);
+                })
+                .then(() => {
+                    showNotification(translation['password_changed']);
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                })
+                .catch(error => {
+                    console.error('Password change error:', error);
+                    if (error.code === 'auth/wrong-password') {
+                        showNotification(translation['wrong_password'], 'error');
+                    } else {
+                        showNotification(translation['error_occurred'], 'error');
+                    }
+                });
+        });
+
+        // د بیرته تګ بټن
+        document.getElementById('back-btn').addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+
+        // د کاروونکي معلومات لوډول
+        function loadUserData(userId) {
+            database.ref(`users/${userId}`).once('value')
+                .then(snapshot => {
+                    const userData = snapshot.val();
+                    if (userData) {
+                        // د ژبې تنظیمول
+                        const lang = userData.language || localStorage.getItem('userLanguage') || 'ps';
+                        document.getElementById('language-select').value = lang;
+                        applyTranslations(lang);
+                        
+                        // د را ایستلو معلومات
+                        if (userData.withdrawInfo) {
+                            const withdrawInfo = userData.withdrawInfo;
+                            
+                            if (withdrawInfo.method === 'usdt') {
+                                document.querySelector('[data-method="usdt"]').click();
+                                document.getElementById('usdt-address').value = withdrawInfo.usdtAddress || '';
+                            } else {
+                                document.querySelector('[data-method="bank"]').click();
+                                document.getElementById('bank-name').value = withdrawInfo.bankName || '';
+                                document.getElementById('account-name').value = withdrawInfo.accountName || '';
+                                document.getElementById('account-number').value = withdrawInfo.accountNumber || '';
+                                document.getElementById('iban').value = withdrawInfo.iban || '';
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user data:', error);
+                });
+        }
+
+        // د اتینټیکیشن حالت څارنه
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // د کاروونکي معلومات لوډول
+                loadUserData(user.uid);
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // د افغانستان بیرغ د عنوانونو لپاره
+        const titles = document.querySelectorAll('.section-title, .app-logo');
+        titles.forEach(title => {
+            const flag = document.createElement('span');
+            flag.className = 'afghan-flag';
+            title.appendChild(flag);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افغاني ټریډر - USDT Withdraw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --green: #006341;
+            --red: #CE1126;
+            --black: #000000;
+            --gold: #D3A329;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --blue: #1a5fb4;
+            --trc20: #009393;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--black);
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--green) 0%, var(--black) 50%, var(--red) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+        }
+        
+        .app-logo {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        } 
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(0, 99, 65, 0.2);
+            outline: none;
+        }
+        
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .amount-option {
+            background: white;
+            border: 5px solid #ddd;
+            border-radius: 40px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .amount-option:hover, .amount-option.selected {
+            border-color: var(--green);
+            background-color: rgba(0, 99, 65, 0.1);
+        }
+        
+        .network-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .network-option {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .network-option:hover, .network-option.selected {
+            border-color: var(--green);
+            background-color: rgba(0, 99, 65, 0.1);
+        }
+        
+        .network-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .trc20 {
+            color: var(--trc20);
+        }
+        
+        .wallet-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .wallet-info p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .wallet-info strong {
+            color: var(--green);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, var(--green), #004d33);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .submit-btn:disabled {
+            background: var(--dark-gray);
+            cursor: not-allowed;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .notification.success {
+            background: var(--green);
+            color: white;
+        }
+        
+        .notification.error {
+            background: var(--red);
+            color: white;
+        }
+        
+        .notification.warning {
+            background: var(--gold);
+            color: var(--black);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .withdraw-limits {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .withdraw-limits p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .withdraw-limits strong {
+            color: var(--red);
+        }
+        
+        @media (max-width: 600px) {
+            .amount-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .network-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" id="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span id="back-text">بیرته</span>
+            </button>
+            <div class="app-logo">
+                <i class="fas fa-money-bill-wave"></i>
+                <span id="page-title">USDT Withdraw</span>
+                <span class="Afghani Trade-badge">Afghani Trade</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="wallet-info" id="wallet-info">
+                <p>
+                    <span id="available-balance-label">شته بلانس:</span>
+                    <strong id="available-balance">0 USDT</strong>
+                </p>
+                <p>
+                    <span id="last-withdraw-label">وروستی Withdraw:</span>
+                    <strong id="last-withdraw">نه دی</strong>
+                </p>
+            </div>
+            
+            <div class="withdraw-limits">
+                <p>
+                    <span id="min-withdraw-label">لږترلږه Withdraw:</span>
+                    <strong>10 USDT</strong>
+                </p>
+                <p>
+                    <span id="withdraw-fee-label">فې:</span>
+                    <strong>1 USDT</strong>
+                </p>
+                <p>
+                    <span id="daily-limit-label">ورځنی حد:</span>
+                    <strong>1 time in 24 hours</strong>
+                </p>
+            </div>
+            
+            <div id="wallet-setup-section">
+                <div class="section-title">
+                    <i class="fas fa-wallet"></i>
+                    <span id="wallet-setup-label">خپل USDT والټ تنظیم کړئ</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="wallet-address" id="wallet-address-label">USDT والټ ادرس</label>
+                    <input type="text" id="wallet-address" placeholder="د USDT والټ ادرس">
+                </div>
+                
+                <div class="section-title">
+                    <i class="fas fa-network-wired"></i>
+                    <span id="network-label">شبکه انتخاب کړئ</span>
+                </div>
+                
+                <div class="network-options" id="network-options">
+                    <div class="network-option" data-network="trc20">
+                        <div class="network-icon trc20">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="network-name">TRC20</div>
+                        <div class="network-fee">Fee: 1 USDT</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="withdraw-password" id="withdraw-password-label">د Withdraw پاسورډ تنظیم کړئ</label>
+                    <input type="password" id="withdraw-password" placeholder="د Withdraw پاسورډ">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password" id="confirm-password-label">پاسورډ تایید کړئ</label>
+                    <input type="password" id="confirm-password" placeholder="پاسورډ بیا ولیکئ">
+                </div>
+                
+                <button class="submit-btn" id="setup-btn">
+                    <i class="fas fa-save"></i>
+                    <span id="setup-text">ذخیره کول</span>
+                </button>
+            </div>
+            
+            <div id="withdraw-section" style="display: none;">
+                <div class="section-title">
+                    <i class="fas fa-coins"></i>
+                    <span id="amount-label">د Withdraw اندازه</span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="number" id="amount-input" placeholder="د USDT اندازه" min="10">
+                </div>
+                
+                <div class="amount-options" id="amount-options">
+                    <div class="amount-option" data-amount="10">10 USDT</div>
+                    <div class="amount-option" data-amount="50">50 USDT</div>
+                    <div class="amount-option" data-amount="100">100 USDT</div>
+                    <div class="amount-option" data-amount="200">200 USDT</div>
+                    <div class="amount-option" data-amount="500">500 USDT</div>
+                    <div class="amount-option" data-amount="1000">1000 USDT</div>
+                </div>
+                
+                <div class="wallet-info">
+                    <p>
+                        <span id="withdraw-to-label">Withdraw به:</span>
+                        <strong id="withdraw-wallet">نه دی تنظیم شوی</strong>
+                    </p>
+                    <p>
+                        <span id="withdraw-network-label">شبکه:</span>
+                        <strong id="withdraw-network">نه دی انتخاب شوی</strong>
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="enter-password" id="enter-password-label">د Withdraw پاسورډ</label>
+                    <input type="password" id="enter-password" placeholder="د Withdraw پاسورډ دننه کړئ">
+                </div>
+                
+                <button class="submit-btn" id="submit-btn">
+                    <i class="fas fa-arrow-right"></i>
+                    <span id="submit-text">Withdraw کول</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // د Firebase کانفیګوریشن
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOM2PzdNzdHEvBxqZ9FF0zh6p9jQ-ItPo",
+            authDomain: "afghan-crypto-r.firebaseapp.com",
+            databaseURL: "https://afghan-crypto-trader-default-rtdb.firebaseio.com",
+            projectId: "afghan-crypto-trader",
+            storageBucket: "afghan-crypto-trader.appspot.com",
+            messagingSenderId: "600812001044",
+            appId: "1:600812001044:web:0e54c213b8191b25665401",
+            measurementId: "G-R7XE5HQ7V8"
+        };
+
+        // د Firebase انیشیالایز کول
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // د ژبو ټرانسلیشن
+        const translations = {
+            'en': {
+              
+                'back': 'Back',
+                'available_balance': 'Available Balance:',
+                'last_withdraw': 'Last Withdraw:',
+                'min_withdraw': 'Minimum Withdraw:',
+                'withdraw_fee': 'Fee:',
+                'daily_limit': 'Daily Limit:',
+                'wallet_setup': 'Set Up Your USDT Wallet',
+                'wallet_address': 'USDT Wallet Address',
+                'network': 'Select Network',
+                'withdraw_password': 'Set Withdraw Password',
+                'confirm_password': 'Confirm Password',
+                'setup': 'Save',
+                'amount': 'Withdraw Amount',
+                'withdraw_to': 'Withdraw to:',
+                'enter_password': 'Withdraw Password',
+                'submit': 'Withdraw',
+                'setup_success': 'Wallet setup completed successfully',
+                'password_mismatch': 'Passwords do not match',
+                'wallet_required': 'Wallet address is required',
+                'network_required': 'Network is required',
+                'password_required': 'Withdraw password is required',
+                'amount_required': 'Please enter amount (minimum 10 USDT)',
+                'insufficient_balance': 'Insufficient balance',
+                'withdraw_success': 'Withdrawal request submitted successfully',
+                'withdraw_failed': 'Withdrawal failed, please try again',
+                'invalid_password': 'Invalid withdraw password',
+                'daily_limit_reached': 'You can only withdraw once every 24 hours',
+                'never': 'Never'
+            },
+            'ps': {
+              
+                'back': 'بیرته',
+                'available_balance': 'شته بلانس:',
+                'last_withdraw': 'وروستی Withdraw:',
+                'min_withdraw': 'لږترلږه Withdraw:',
+                'withdraw_fee': 'فې:',
+                'daily_limit': 'ورځنی حد:',
+                'wallet_setup': 'خپل USDT والټ تنظیم کړئ',
+                'wallet_address': 'USDT والټ ادرس',
+                'network': 'شبکه انتخاب کړئ',
+                'withdraw_password': 'د Withdraw پاسورډ تنظیم کړئ',
+                'confirm_password': 'پاسورډ تایید کړئ',
+                'setup': 'ذخیره کول',
+                'amount': 'د Withdraw اندازه',
+                'withdraw_to': 'Withdraw به:',
+                'enter_password': 'د Withdraw پاسورډ',
+                'submit': 'Withdraw کول',
+                'setup_success': 'د والټ تنظیم په بریالیتوب سره تکمیل شو',
+                'password_mismatch': 'پاسورډونه مطابقت نلري',
+                'wallet_required': 'د والټ ادرس اړین دی',
+                'network_required': 'شبکه اړینه ده',
+                'password_required': 'د Withdraw پاسورډ اړین دی',
+                'amount_required': 'مهرباني وکړئ اندازه دننه کړئ (لږترلږه 10 USDT)',
+                'insufficient_balance': 'ناکافي بلانس',
+                'withdraw_success': 'د Withdraw غوښتنه په بریالیتوب سره وسپارل شوه',
+                'withdraw_failed': 'د Withdraw ناکامي، مهرباني وکړئ بیا هڅه وکړئ',
+                'invalid_password': 'ناسم Withdraw پاسورډ',
+                'daily_limit_reached': 'تاسو کولی شئ په 24 ساعتونو کې یوازې یو ځل Withdraw وکړئ',
+                'never': 'نه دی'
+            },
+            'pr': {
+              
+                'back': 'بازگشت',
+                'available_balance': 'موجودی قابل برداشت:',
+                'last_withdraw': 'آخرین برداشت:',
+                'min_withdraw': 'حداقل برداشت:',
+                'withdraw_fee': 'کارمزد:',
+                'daily_limit': 'محدودیت روزانه:',
+                'wallet_setup': 'تنظیم کیف پول USDT',
+                'wallet_address': 'آدرس کیف پول USDT',
+                'network': 'انتخاب شبکه',
+                'withdraw_password': 'تنظیم رمز برداشت',
+                'confirm_password': 'تکرار رمز عبور',
+                'setup': 'ذخیره',
+                'amount': 'مبلغ برداشت',
+                'withdraw_to': 'برداشت به:',
+                'enter_password': 'رمز برداشت',
+                'submit': 'برداشت',
+                'setup_success': 'تنظیم کیف پول با موفقیت انجام شد',
+                'password_mismatch': 'رمزهای عبور مطابقت ندارند',
+                'wallet_required': 'آدرس کیف پول الزامی است',
+                'network_required': 'انتخاب شبکه الزامی است',
+                'password_required': 'رمز برداشت الزامی است',
+                'amount_required': 'لطفاً مبلغ را وارد کنید (حداقل 10 USDT)',
+                'insufficient_balance': 'موجودی کافی نیست',
+                'withdraw_success': 'درخواست برداشت با موفقیت ثبت شد',
+                'withdraw_failed': 'برداشت ناموفق بود، لطفاً مجدداً تلاش کنید',
+                'invalid_password': 'رمز برداشت نادرست',
+                'daily_limit_reached': 'شما فقط می‌توانید هر 24 ساعت یکبار برداشت کنید',
+                'never': 'هرگز'
+            }
+        };
+
+        // د DOM عناصر
+        const domElements = {
+            backBtn: document.getElementById('back-btn'),
+            backText: document.getElementById('back-text'),
+            pageTitle: document.getElementById('page-title'),
+            availableBalance: document.getElementById('available-balance'),
+            availableBalanceLabel: document.getElementById('available-balance-label'),
+            lastWithdraw: document.getElementById('last-withdraw'),
+            lastWithdrawLabel: document.getElementById('last-withdraw-label'),
+            minWithdrawLabel: document.getElementById('min-withdraw-label'),
+            withdrawFeeLabel: document.getElementById('withdraw-fee-label'),
+            dailyLimitLabel: document.getElementById('daily-limit-label'),
+            walletSetupLabel: document.getElementById('wallet-setup-label'),
+            walletAddressLabel: document.getElementById('wallet-address-label'),
+            walletAddress: document.getElementById('wallet-address'),
+            networkLabel: document.getElementById('network-label'),
+            networkOptions: document.getElementById('network-options'),
+            withdrawPasswordLabel: document.getElementById('withdraw-password-label'),
+            withdrawPassword: document.getElementById('withdraw-password'),
+            confirmPasswordLabel: document.getElementById('confirm-password-label'),
+            confirmPassword: document.getElementById('confirm-password'),
+            setupBtn: document.getElementById('setup-btn'),
+            setupText: document.getElementById('setup-text'),
+            amountLabel: document.getElementById('amount-label'),
+            amountInput: document.getElementById('amount-input'),
+            amountOptions: document.getElementById('amount-options'),
+            withdrawToLabel: document.getElementById('withdraw-to-label'),
+            withdrawWallet: document.getElementById('withdraw-wallet'),
+            withdrawNetworkLabel: document.getElementById('withdraw-network-label'),
+            withdrawNetwork: document.getElementById('withdraw-network'),
+            enterPasswordLabel: document.getElementById('enter-password-label'),
+            enterPassword: document.getElementById('enter-password'),
+            submitBtn: document.getElementById('submit-btn'),
+            submitText: document.getElementById('submit-text'),
+            walletSetupSection: document.getElementById('wallet-setup-section'),
+            withdrawSection: document.getElementById('withdraw-section')
+        };
+
+        // د ژبې تطبیق کول
+        function applyTranslations(lang) {
+            const translation = translations[lang] || translations['ps'];
+            
+            domElements.backText.textContent = translation['back'];
+            domElements.pageTitle.textContent = translation['page_title'];
+            domElements.availableBalanceLabel.textContent = translation['available_balance'];
+            domElements.lastWithdrawLabel.textContent = translation['last_withdraw'];
+            domElements.minWithdrawLabel.textContent = translation['min_withdraw'];
+            domElements.withdrawFeeLabel.textContent = translation['withdraw_fee'];
+            domElements.dailyLimitLabel.textContent = translation['daily_limit'];
+            domElements.walletSetupLabel.textContent = translation['wallet_setup'];
+            domElements.walletAddressLabel.textContent = translation['wallet_address'];
+            domElements.walletAddress.placeholder = translation['wallet_address'];
+            domElements.networkLabel.textContent = translation['network'];
+            domElements.withdrawPasswordLabel.textContent = translation['withdraw_password'];
+            domElements.withdrawPassword.placeholder = translation['withdraw_password'];
+            domElements.confirmPasswordLabel.textContent = translation['confirm_password'];
+            domElements.confirmPassword.placeholder = translation['confirm_password'];
+            domElements.setupText.textContent = translation['setup'];
+            domElements.amountLabel.textContent = translation['amount'];
+            domElements.amountInput.placeholder = translation['amount'];
+            domElements.withdrawToLabel.textContent = translation['withdraw_to'];
+            domElements.withdrawNetworkLabel.textContent = translation['network'];
+            domElements.enterPasswordLabel.textContent = translation['enter_password'];
+            domElements.enterPassword.placeholder = translation['enter_password'];
+            domElements.submitText.textContent = translation['submit'];
+        }
+
+        // د اعالمیې ښکاره کول
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // د بېرته تګ بټن
+        domElements.backBtn.addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+
+        // د اندازه اختیارونو فعالیت
+        domElements.amountOptions.querySelectorAll('.amount-option').forEach(option => {
+            option.addEventListener('click', () => {
+                domElements.amountOptions.querySelectorAll('.amount-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+                domElements.amountInput.value = option.getAttribute('data-amount');
+            });
+        });
+
+        // د شبکه اختیارونو فعالیت
+        domElements.networkOptions.querySelectorAll('.network-option').forEach(option => {
+            option.addEventListener('click', () => {
+                domElements.networkOptions.querySelectorAll('.network-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+            });
+        });
+
+        // د والټ تنظیم سپارل
+        domElements.setupBtn.addEventListener('click', async () => {
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const walletAddress = domElements.walletAddress.value.trim();
+            const network = document.querySelector('.network-option.selected')?.getAttribute('data-network');
+            const withdrawPassword = domElements.withdrawPassword.value;
+            const confirmPassword = domElements.confirmPassword.value;
+            const user = auth.currentUser;
+            
+            if (!walletAddress) {
+                showNotification(translations[lang]['wallet_required'], 'error');
+                return;
+            }
+            
+            if (!network) {
+                showNotification(translations[lang]['network_required'], 'error');
+                return;
+            }
+            
+            if (!withdrawPassword) {
+                showNotification(translations[lang]['password_required'], 'error');
+                return;
+            }
+            
+            if (withdrawPassword !== confirmPassword) {
+                showNotification(translations[lang]['password_mismatch'], 'error');
+                return;
+            }
+            
+            if (user) {
+                try {
+                    await database.ref(`users/${user.uid}/withdrawSettings`).set({
+                        walletAddress: walletAddress,
+                        network: network,
+                        withdrawPassword: withdrawPassword,
+                        setupAt: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    
+                    showNotification(translations[lang]['setup_success']);
+                    
+                    // د والټ معلومات ښکاره کول
+                    domElements.withdrawWallet.textContent = walletAddress;
+                    domElements.withdrawNetwork.textContent = network.toUpperCase();
+                    
+                    // د فورم برخې بدلول
+                    domElements.walletSetupSection.style.display = 'none';
+                    domElements.withdrawSection.style.display = 'block';
+                    
+                    // د کاروونکي معلومات تازه کول
+                    loadUserData(user.uid);
+                } catch (error) {
+                    console.error('Afghani Trade Error:', error);
+                    showNotification(translations[lang]['withdraw_failed'], 'error');
+                }
+            }
+        });
+
+        // د Withdraw سپارل
+        domElements.submitBtn.addEventListener('click', async () => {
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const amount = parseFloat(domElements.amountInput.value);
+            const password = domElements.enterPassword.value;
+            const user = auth.currentUser;
+            
+            if (!amount || amount < 10) {
+                showNotification(translations[lang]['amount_required'], 'error');
+                return;
+            }
+            
+            if (!password) {
+                showNotification(translations[lang]['password_required'], 'error');
+                return;
+            }
+            
+            if (user) {
+                try {
+                    // د کاروونکي معلومات وګورئ
+                    const userRef = await database.ref(`users/${user.uid}`).once('value');
+                    const userData = userRef.val();
+                    
+                    if (!userData.withdrawSettings) {
+                        showNotification(translations[lang]['wallet_required'], 'error');
+                        return;
+                    }
+                    
+                    // د پاسورډ چک
+                    if (password !== userData.withdrawSettings.withdrawPassword) {
+                        showNotification(translations[lang]['invalid_password'], 'error');
+                        return;
+                    }
+                    
+                    // د بلانس چک
+                    const balance = userData.balance || 0;
+                    const withdrawAmountWithFee = amount + 1; // 1 USDT fee
+                    
+                    if (balance < withdrawAmountWithFee) {
+                        showNotification(translations[lang]['insufficient_balance'], 'error');
+                        return;
+                    }
+                    
+                    // د وروستي Withdraw چک
+                    const now = Date.now();
+                    const lastWithdraw = userData.lastWithdraw || 0;
+                    const hoursSinceLastWithdraw = (now - lastWithdraw) / (1000 * 60 * 60);
+                    
+                    if (hoursSinceLastWithdraw < 24) {
+                        showNotification(translations[lang]['daily_limit_reached'], 'error');
+                        return;
+                    }
+                    
+                    // د Withdraw ریکارډ جوړول
+                    const withdrawRef = database.ref('withdrawals').push();
+                    const withdrawId = withdrawRef.key;
+                    
+                    const withdrawData = {
+                        userId: user.uid,
+                        email: user.email,
+                        amount: amount,
+                        fee: 1,
+                        total: withdrawAmountWithFee,
+                        walletAddress: userData.withdrawSettings.walletAddress,
+                        network: userData.withdrawSettings.network,
+                        status: 'pending',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP,
+                        adminApprovalRequired: true
+                    };
+                    
+                    await withdrawRef.set(withdrawData);
+                    
+                    // د بلانس تازه کول
+                    await database.ref(`users/${user.uid}`).update({
+                        balance: balance - withdrawAmountWithFee,
+                        lastWithdraw: now
+                    });
+                    
+                    showNotification(translations[lang]['withdraw_success']);
+                    
+                    // د کاروونکي معلومات تازه کول
+                    loadUserData(user.uid);
+                    
+                    // د فورم ریسټ
+                    domElements.amountInput.value = '';
+                    domElements.enterPassword.value = '';
+                    domElements.amountOptions.querySelectorAll('.amount-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                } catch (error) {
+                    console.error('Afghani Trade Error:', error);
+                    showNotification(translations[lang]['withdraw_failed'], 'error');
+                }
+            }
+        });
+
+        // د کاروونکي معلومات لوډول
+        async function loadUserData(userId) {
+            try {
+                const userRef = await database.ref(`users/${userId}`).once('value');
+                const userData = userRef.val();
+                
+                if (userData) {
+                    const lang = localStorage.getItem('userLanguage') || 'ps';
+                    
+                    // د بلانس ښکاره کول
+                    domElements.availableBalance.textContent = `${userData.balance || 0} USDT`;
+                    
+                    // د وروستي Withdraw ښکاره کول
+                    if (userData.lastWithdraw) {
+                        const lastWithdrawDate = new Date(userData.lastWithdraw);
+                        const now = new Date();
+                        const diffHours = Math.floor((now - lastWithdrawDate) / (1000 * 60 * 60));
+                        
+                        if (diffHours < 24) {
+                            const remainingHours = 24 - diffHours;
+                            domElements.lastWithdraw.textContent = `${remainingHours} hours left`;
+                        } else {
+                            domElements.lastWithdraw.textContent = translations[lang]['never'];
+                        }
+                    } else {
+                        domElements.lastWithdraw.textContent = translations[lang]['never'];
+                    }
+                    
+                    // که چېرې والټ تنظیم شوی وي، د Withdraw برخه ښکاره کړئ
+                    if (userData.withdrawSettings) {
+                        domElements.walletSetupSection.style.display = 'none';
+                        domElements.withdrawSection.style.display = 'block';
+                        
+                        domElements.withdrawWallet.textContent = userData.withdrawSettings.walletAddress;
+                        domElements.withdrawNetwork.textContent = userData.withdrawSettings.network.toUpperCase();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // د ذخیره شوې ژبې تطبیق کول
+        const savedLanguage = localStorage.getItem('userLanguage') || 'ps';
+        applyTranslations(savedLanguage);
+        
+        // د لور تنظیمول د ژبې په اساس
+        if (savedLanguage === 'en') {
+            document.documentElement.dir = 'ltr';
+        }
+
+        // د Firebase د اتینټیکیشن حالت څارنه
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                loadUserData(user.uid);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pr" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افغاني ټریډر - USDT چارج</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --green: #006341;
+            --red: #CE1126;
+            --black: #000000;
+            --gold: #D3A329;
+            --light-gray: #f8f9fa;
+            --dark-gray: #6c757d;
+            --blue: #1a5fb4;
+            --nowpayments: #00aef3;
+            --trc20: #009393;
+          
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--black);
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, var(--green) 0%, var(--black) 50%, var(--red) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+        }
+        
+        .app-logo {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        } 
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(0, 99, 65, 0.2);
+            outline: none;
+        }
+        
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .amount-option {
+            background: white;
+            border: 5px solid #ddd;
+            border-radius: 40px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .amount-option:hover, .amount-option.selected {
+            border-color: var(--green);
+            background-color: rgba(0, 99, 65, 0.1);
+        }
+        
+        .network-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .network-option {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .network-option:hover, .network-option.selected {
+            border-color: var(--green);
+            background-color: rgba(0, 99, 65, 0.1);
+        }
+        
+        .network-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .trc20 {
+            color: var(--trc20);
+        }
+        
+
+        
+           .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, var(--green), #004d33);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .payment-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .payment-iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .close-modal {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .notification.success {
+            background: var(--green);
+            color: white;
+        }
+        
+        .notification.error {
+            background: var(--red);
+            color: white;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 600px) {
+            .amount-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .network-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" id="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span id="back-text">بیرته</span>
+            </button>
+            <div class="app-logo">
+                <i class="fas fa-money-bill-wave"></i>
+                <span id="page-title">USDT چارج</span>
+                <span class="Afghani Trade-badge">Afghani Trade</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="section-title">
+                <i class="fas fa-coins"></i>
+                <span id="amount-label">د چارج اندازه</span>
+            </div>
+            
+            <div class="form-group">
+                <input type="number" id="amount-input" placeholder="د USDT اندازه" min="5">
+            </div>
+            
+            <div class="amount-options" id="amount-options">
+                <div class="amount-option" data-amount="5">5 USDT</div>
+                <div class="amount-option" data-amount="10">10 USDT</div>
+                <div class="amount-option" data-amount="20">20 USDT</div>
+                <div class="amount-option" data-amount="50">50 USDT</div>
+                <div class="amount-option" data-amount="100">100 USDT</div>
+                <div class="amount-option" data-amount="200">200 USDT</div>
+                <div class="amount-option" data-amount="500">500 USDT</div>
+                <div class="amount-option" data-amount="1000">1000 USDT</div>
+                <div class="amount-option" data-amount="2000">2000 USDT</div>
+            </div>
+            
+            <div class="section-title">
+                <i class="fas fa-network-wired"></i>
+                <span id="network-label">شبکه انتخاب کړئ</span>
+            </div>
+            
+            <div class="network-options" id="network-options">
+                <div class="network-option" data-network="trc20">
+                    <div class="network-icon trc20">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="network-name">TRC20</div>
+                    <div class="network-fee">Fee: 1 USDT</div>
+                </div>
+                </div>
+            </div>
+            
+            <button class="submit-btn" id="submit-btn">
+                <i class="fas fa-arrow-right"></i>
+                <span id="submit-text">چارج کول</span>
+            </button>
+            
+            <div class="section-title">
+                <i class="fas fa-info-circle"></i>
+                <span id="info-label"></span>
+            </div>
+            
+            <div class="form-group">
+                <p id="minimum-amount">لږترلږه چارج اندازه: 5 USDT</p>
+                <p id="processing-time">د چارج وخت: 5-30 دقیقې</p>
+            </div>
+        </div>
+
+    <div class="payment-modal" id="payment-modal">
+        <div class="payment-content">
+            <h3 id="modal-title"> Afghani Trade </h3>
+            <iframe class="payment-iframe" id="payment-iframe" src="about:blank"></iframe>
+            <button class="close-modal" id="close-modal">بندول</button>
+        </div>
+    </div>
+
+    <script>
+        // د Firebase کانفیګوریشن
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOM2PzdNzdHEvBxqZ9FF0zh6p9jQ-ItPo",
+            authDomain: "afghan-crypto-r.firebaseapp.com",
+            databaseURL: "https://afghan-crypto-trader-default-rtdb.firebaseio.com",
+            projectId: "afghan-crypto-trader",
+            storageBucket: "afghan-crypto-trader.appspot.com",
+            messagingSenderId: "600812001044",
+            appId: "1:600812001044:web:0e54c213b8191b25665401",
+            measurementId: "G-R7XE5HQ7V8"
+        };
+
+        // د Firebase انیشیالایز کول
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // د NOWPayments API تنظیمات
+        const NOWPAYMENTS_API = {
+            key: "4K4WD3E-ZNFMX1W-GXW5621-7ZNQNF0",
+            publicKey: "aaef79c1-6ef3-4ffe-9da5-7e3c1e3d2725",
+            callbackUrl: "https://afghanitrader.com/api/payment-callback",
+            endpoint: "https://api.nowpayments.io/v1/"
+        };
+
+        // د ژبو ټرانسلیشن
+        const translations = {
+            'en': {
+                'page_title': '',
+                'back': 'Back',
+                'amount': 'Deposit Amount',
+                'network': 'Select Network',
+                'submit': 'Deposit',
+                'modal_title': 'Afghani Trade Payment Portal',
+                'close': 'Close',
+                'minimum_amount': 'Minimum deposit: 5 USDT',
+                'processing_time': 'Processing time: 5-30 minutes',
+                'amount_required': 'Please enter amount (minimum 5 USDT)',
+                'network_required': 'Please select network',
+                'deposit_processing': 'Processing your deposit...',
+                'deposit_success': 'Deposit submitted successfully',
+                'deposit_failed': 'Deposit failed, please try again'
+            },
+            'ps': {
+                'page_title': '',
+                'back': 'بیرته',
+                'amount': 'د چارج اندازه',
+                'network': 'شبکه انتخاب کړئ',
+                'submit': 'چارج کول',
+                'modal_title': 'Afghani Trade',
+                'close': 'بندول',
+                'minimum_amount': 'لږترلږه چارج اندازه: 5 USDT',
+                'processing_time': 'د چارج وخت: 5-30 دقیقې',
+                'amount_required': 'مهرباني وکړئ اندازه دننه کړئ (لږترلږه 5 USDT)',
+                'network_required': 'مهرباني وکړئ شبکه وټاکئ',
+                'deposit_processing': 'ستاسو چارج پروسس کیږي...',
+                'deposit_success': 'د چارج غوښتنه په بریالیتوب سره وسپارل شوه',
+                'deposit_failed': 'د چارج ناکامي، مهرباني وکړئ بیا هڅه وکړئ'
+            },
+            'pr': {
+                'page_title': '',
+                'back': 'بازگشت',
+                'amount': 'مبلغ واریز',
+                'network': 'شبکه را انتخاب کنید',
+                'submit': 'شارژ کردن',
+                'modal_title': 'Afghani Trade',
+                'close': 'بستن',
+                'minimum_amount': 'حداقل واریز: 5 USDT',
+                'processing_time': 'زمان پردازش: 5-30 دقیقه',
+                'amount_required': 'لطفاً مبلغ را وارد کنید (حداقل 5 USDT)',
+                'network_required': 'لطفاً شبکه را انتخاب کنید',
+                'deposit_processing': 'در حال پردازش واریز شما...',
+                'deposit_success': 'درخواست واریز با موفقیت ثبت شد',
+                'deposit_failed': 'واریز ناموفق بود، لطفاً مجدداً تلاش کنید'
+            }
+        };
+
+        // د DOM عناصر
+        const domElements = {
+            backBtn: document.getElementById('back-btn'),
+            backText: document.getElementById('back-text'),
+            pageTitle: document.getElementById('page-title'),
+            amountLabel: document.getElementById('amount-label'),
+            amountInput: document.getElementById('amount-input'),
+            amountOptions: document.getElementById('amount-options'),
+            networkLabel: document.getElementById('network-label'),
+            networkOptions: document.getElementById('network-options'),
+            submitBtn: document.getElementById('submit-btn'),
+            submitText: document.getElementById('submit-text'),
+            minimumAmount: document.getElementById('minimum-amount'),
+            processingTime: document.getElementById('processing-time'),
+            paymentModal: document.getElementById('payment-modal'),
+            paymentIframe: document.getElementById('payment-iframe'),
+            modalTitle: document.getElementById('modal-title'),
+            closeModal: document.getElementById('close-modal')
+        };
+
+        // د ژبې تطبیق کول
+        function applyTranslations(lang) {
+            const translation = translations[lang] || translations['ps'];
+            
+            domElements.backText.textContent = translation['back'];
+            domElements.pageTitle.textContent = translation['page_title'];
+            domElements.amountLabel.textContent = translation['amount'];
+            domElements.amountInput.placeholder = translation['amount'];
+            domElements.networkLabel.textContent = translation['network'];
+            domElements.submitText.textContent = translation['submit'];
+            domElements.modalTitle.textContent = translation['modal_title'];
+            domElements.closeModal.textContent = translation['close'];
+            domElements.minimumAmount.textContent = translation['minimum_amount'];
+            domElements.processingTime.textContent = translation['processing_time'];
+        }
+
+        // د اعالمیې ښکاره کول
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // د بېرته تګ بټن
+        domElements.backBtn.addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
+
+        // د اندازه اختیارونو فعالیت
+        domElements.amountOptions.querySelectorAll('.amount-option').forEach(option => {
+            option.addEventListener('click', () => {
+                domElements.amountOptions.querySelectorAll('.amount-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+                domElements.amountInput.value = option.getAttribute('data-amount');
+            });
+        });
+
+        // د شبکه اختیارونو فعالیت
+        domElements.networkOptions.querySelectorAll('.network-option').forEach(option => {
+            option.addEventListener('click', () => {
+                domElements.networkOptions.querySelectorAll('.network-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                option.classList.add('selected');
+            });
+        });
+
+        // د مودال بندول
+        domElements.closeModal.addEventListener('click', () => {
+            domElements.paymentModal.style.display = 'none';
+        });
+
+        // د NOWPayments API سره پرداخت شروع کول
+        async function initiateDeposit(amount, network, userId, email) {
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            showNotification(translations[lang]['deposit_processing']);
+            
+            try {
+                // د Firebase کې د چارج ریکارډ جوړول
+                const depositRef = database.ref('deposits').push();
+                const depositId = depositRef.key;
+                
+                const depositData = {
+                    userId: userId,
+                    email: email,
+                    amount: parseFloat(amount),
+                    network: network,
+                    status: 'pending',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    paymentMethod: 'NOWPayments'
+                };
+                
+                await depositRef.set(depositData);
+                
+                // د NOWPayments API ته د پرداخت غوښتنه
+                const response = await fetch(NOWPAYMENTS_API.endpoint + 'invoice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': NOWPAYMENTS_API.key
+                    },
+                    body: JSON.stringify({
+                        price_amount: amount,
+                        price_currency: 'usd',
+                        pay_currency: network === 'trc20' ? 'usdttrc20' : '',
+                        ipn_callback_url: NOWPAYMENTS_API.callbackUrl,
+                        order_id: depositId,
+                        order_description: `Deposit for ${email}`,
+                        success_url: `https://afghanitrader.com/success.html?id=${depositId}`,
+                        cancel_url: `https://afghanitrader.com/cancel.html?id=${depositId}`
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data && data.invoice_url) {
+                    // د پرداخت پاپ اپ ښکاره کول
+                    domElements.paymentIframe.src = data.invoice_url;
+                    domElements.paymentModal.style.display = 'flex';
+                    
+                    // د Firebase کې د چارج معلومات تازه کول
+                    await depositRef.update({
+                        paymentId: data.id,
+                        invoiceUrl: data.invoice_url
+                    });
+                    
+                    // د پرداخت حالت څارنه
+                    checkDepositStatus(depositId, data.id);
+                } else {
+                    throw new Error(data.message || 'د پرداخت په شروع کې ستونزه رامنځته شوه');
+                }
+            } catch (error) {
+                console.error('Afghani Trade Error:', error);
+                showNotification(translations[lang]['deposit_failed'], 'error');
+            }
+        }
+
+        // د چارج حالت څارنه
+        function checkDepositStatus(depositId, paymentId) {
+            const interval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${NOWPAYMENTS_API.endpoint}payment/${paymentId}`, {
+                        headers: {
+                            'x-api-key': NOWPAYMENTS_API.key
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.payment_status === 'finished') {
+                        clearInterval(interval);
+                        
+                        // د Firebase کې د چارج حالت تازه کول
+                        await database.ref(`deposits/${depositId}`).update({
+                            status: 'completed',
+                            confirmedAt: firebase.database.ServerValue.TIMESTAMP,
+                            transactionHash: data.payment_id,
+                            actualAmount: data.price_amount
+                        });
+                        
+                        // د کاروونکي بیلانس تازه کول
+                        const deposit = (await database.ref(`deposits/${depositId}`).once('value')).val();
+                        await database.ref(`users/${deposit.userId}/balance`).transaction(balance => {
+                            return (balance || 0) + parseFloat(deposit.amount);
+                        });
+                        
+                        const lang = localStorage.getItem('userLanguage') || 'ps';
+                        showNotification(translations[lang]['deposit_success']);
+                        domElements.paymentModal.style.display = 'none';
+                        
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
+                    } else if (data.payment_status === 'failed') {
+                        clearInterval(interval);
+                        await database.ref(`deposits/${depositId}`).update({
+                            status: 'failed'
+                        });
+                        showNotification('د پرداخت کې ستونزه رامنځته شوه', 'error');
+                    }
+                } catch (error) {
+                    console.error('Deposit status check error:', error);
+                }
+            }, 5000); // هر 5 ثانیه وګورئ
+        }
+
+        // د چارج فورم سپارل
+        domElements.submitBtn.addEventListener('click', async () => {
+            const lang = localStorage.getItem('userLanguage') || 'ps';
+            const amount = domElements.amountInput.value;
+            const network = document.querySelector('.network-option.selected')?.getAttribute('data-network');
+            const user = auth.currentUser;
+            
+            if (!amount || parseFloat(amount) < 5) {
+                showNotification(translations[lang]['amount_required'], 'error');
+                return;
+            }
+            
+            if (!network) {
+                showNotification(translations[lang]['network_required'], 'error');
+                return;
+            }
+            
+            if (user) {
+                await initiateDeposit(amount, network, user.uid, user.email);
+            }
+        });
+
+        // د ذخیره شوې ژبې تطبیق کول
+        const savedLanguage = localStorage.getItem('userLanguage') || 'ps';
+        applyTranslations(savedLanguage);
+        
+        // د لور تنظیمول د ژبې په اساس
+        if (savedLanguage === 'en') {
+            document.documentElement.dir = 'ltr';
+        }
+
+        // د Firebase د اتینټیکیشن حالت څارنه
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
